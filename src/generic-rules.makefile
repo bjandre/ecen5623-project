@@ -2,6 +2,16 @@ CC = cc
 CXX = c++
 AS = as
 
+AR = ar
+
+LD = ld
+
+SIZE = size
+SIZEFLAGS = --format=sysv -x
+
+OBJDUMP = objdump
+OBJDUMP_FLAGS = --disassemble-all --line-numbers --source --full-contents --all-headers
+
 STD_FLAGS = --std=c99
 
 WARN_FLAGS = -Wall -Werror
@@ -26,6 +36,21 @@ CPPFLAGS = -E
 # flags to automatically generate dependency information
 DEPENDS_FLAGS = -MT $@ -MMD -MP -MF $(DEPENDS_DIR)/$*.Td
 
+LDFLAGS = $(LDFLAGS) \
+        -dynamic-linker \
+        -Map=$*.map
+
+LDLIBS = $(LDLIBS) \
+        -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed \
+
+CC_LDFLAGS =
+CC_LDLIBS = -lpthread -lrt
+
+#
+# Generic rule to generate various targets
+#
+$(shell mkdir -p $(DEPENDS_DIR))
+
 %.o : %.c
 %.o : %.c $(DEPENDS_DIR)/%.d
 	$(CC) $(DEPENDS_FLAGS) $(CFLAGS) $(INCLUDES) -c -o $@ $<
@@ -41,7 +66,7 @@ DEPENDS_FLAGS = -MT $@ -MMD -MP -MF $(DEPENDS_DIR)/$*.Td
 	$(AS) $(ASMFLAGS) $(INCLUDES) -c -o $@ $<
 
 $(EXE) : $(DEPEND_STARTUP) $(OBJS) $(DEPEND_LIBS)
-	$(CC) $(CFLAGS) $(CC_LDFLAGS) $(DEBUG_CC_LINK) -o $@ $^ $(DEPEND_STARTUP)
+	$(CC) $(CFLAGS) $(CC_LDFLAGS) $(DEBUG_CC_LINK) -o $@ $^ $(DEPEND_STARTUP) $(CC_LDLIBS)
 
 #
 # macro for executing TARGET in all SUBDIRS

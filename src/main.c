@@ -93,6 +93,7 @@
 
 #include <syslog.h>
 #include <sys/time.h>
+#include <sys/sysinfo.h>
 
 #include <errno.h>
 
@@ -129,7 +130,7 @@ double getTimeMsec(void);
 void print_scheduler(void);
 
 
-void main(void)
+int main(int argc, char **argv)
 {
     struct timeval current_time_val;
     int i, rc, scope;
@@ -375,7 +376,6 @@ void *Sequencer(void *threadp)
     struct timeval current_time_val;
     struct timespec delay_time = {0, 33333333}; // delay for 33.33 msec, 30 Hz
     struct timespec remaining_time;
-    double current_time;
     double residual;
     int rc, delay_cnt = 0;
     unsigned long long seqCnt = 0;
@@ -492,9 +492,7 @@ void *Sequencer(void *threadp)
 void *Service_1(void *threadp)
 {
     struct timeval current_time_val;
-    double current_time;
     unsigned long long S1Cnt = 0;
-    threadParams_t *threadParams = (threadParams_t *)threadp;
 
     gettimeofday(&current_time_val, (struct timezone *)0);
     syslog(LOG_CRIT, "Frame Sampler thread @ sec=%d, msec=%d\n",
@@ -521,9 +519,7 @@ void *Service_1(void *threadp)
 void *Service_2(void *threadp)
 {
     struct timeval current_time_val;
-    double current_time;
     unsigned long long S2Cnt = 0;
-    threadParams_t *threadParams = (threadParams_t *)threadp;
 
     gettimeofday(&current_time_val, (struct timezone *)0);
     syslog(LOG_CRIT, "Time-stamp with Image Analysis thread @ sec=%d, msec=%d\n",
@@ -550,9 +546,7 @@ void *Service_2(void *threadp)
 void *Service_3(void *threadp)
 {
     struct timeval current_time_val;
-    double current_time;
     unsigned long long S3Cnt = 0;
-    threadParams_t *threadParams = (threadParams_t *)threadp;
 
     gettimeofday(&current_time_val, (struct timezone *)0);
     syslog(LOG_CRIT, "Difference Image Proc thread @ sec=%d, msec=%d\n",
@@ -578,9 +572,7 @@ void *Service_3(void *threadp)
 void *Service_4(void *threadp)
 {
     struct timeval current_time_val;
-    double current_time;
     unsigned long long S4Cnt = 0;
-    threadParams_t *threadParams = (threadParams_t *)threadp;
 
     gettimeofday(&current_time_val, (struct timezone *)0);
     syslog(LOG_CRIT, "Time-stamp Image Save to File thread @ sec=%d, msec=%d\n",
@@ -607,9 +599,7 @@ void *Service_4(void *threadp)
 void *Service_5(void *threadp)
 {
     struct timeval current_time_val;
-    double current_time;
     unsigned long long S5Cnt = 0;
-    threadParams_t *threadParams = (threadParams_t *)threadp;
 
     gettimeofday(&current_time_val, (struct timezone *)0);
     syslog(LOG_CRIT, "Processed Image Save to File thread @ sec=%d, msec=%d\n",
@@ -636,9 +626,7 @@ void *Service_5(void *threadp)
 void *Service_6(void *threadp)
 {
     struct timeval current_time_val;
-    double current_time;
     unsigned long long S6Cnt = 0;
-    threadParams_t *threadParams = (threadParams_t *)threadp;
 
     gettimeofday(&current_time_val, (struct timezone *)0);
     syslog(LOG_CRIT, "Send Time-stamped Image to Remote thread @ sec=%d, msec=%d\n",
@@ -665,9 +653,7 @@ void *Service_6(void *threadp)
 void *Service_7(void *threadp)
 {
     struct timeval current_time_val;
-    double current_time;
     unsigned long long S7Cnt = 0;
-    threadParams_t *threadParams = (threadParams_t *)threadp;
 
     gettimeofday(&current_time_val, (struct timezone *)0);
     syslog(LOG_CRIT, "10 sec Tick Debug thread @ sec=%d, msec=%d\n",
@@ -723,4 +709,3 @@ void print_scheduler(void)
         exit(-1);
     }
 }
-
