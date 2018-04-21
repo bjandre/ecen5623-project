@@ -1,7 +1,7 @@
 /**
-   \file template.h
+   \file sequencer.h
 
-   Template header file
+   header file for sequencer related code
  */
 
 /*
@@ -13,19 +13,10 @@
 ** with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 */
 
-#ifndef RTES_TEMPLATE_H_
-#define RTES_TEMPLATE_H_
+#ifndef RTES_SEQUENCER_H_
+#define RTES_SEQUENCER_H_
 
 #include <stdint.h>
-
-/**
-   Template enumeration
-
- */
-typedef enum template_enum_t_ {
-    template_1,/*!< operation successful */
-} template_enum_t;
-
 
 /**
    Do something interesting
@@ -34,7 +25,6 @@ typedef enum template_enum_t_ {
 
    \return status
  */
-uint32_t template_func(void *context);
+void *sequencer(void *context);
 
-
-#endif /* RTES_TEMPLATE_H_ */
+#endif /* RTES_SEQUENCER_H_ */

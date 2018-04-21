@@ -1,7 +1,7 @@
 /**
-   \file template.h
+   \file globals.h
 
-   Template header file
+   Globals header file
  */
 
 /*
@@ -13,18 +13,18 @@
 ** with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 */
 
-#ifndef RTES_TEMPLATE_H_
-#define RTES_TEMPLATE_H_
+#ifndef RTES_GLOBALS_H_
+#define RTES_GLOBALS_H_
 
 #include <stdint.h>
 
 /**
-   Template enumeration
+   Globals enumeration
 
  */
-typedef enum template_enum_t_ {
-    template_1,/*!< operation successful */
-} template_enum_t;
+typedef enum globals_enum_t_ {
+    globals_1,/*!< operation successful */
+} globals_enum_t;
 
 
 /**
@@ -34,7 +34,7 @@ typedef enum template_enum_t_ {
 
    \return status
  */
-uint32_t template_func(void *context);
+uint32_t globals_func(void *context);
 
 
-#endif /* RTES_TEMPLATE_H_ */
+#endif /* RTES_GLOBALS_H_ */
