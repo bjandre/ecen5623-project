@@ -6,6 +6,20 @@ else
   CAMERA_DEV := $(strip_camera)
 endif
 
+# subdirectories that will be built.
+SUBDIRS = \
+        src
+
+# macro for executing TARGET in all SUBDIRS
+#
+ifdef SUBDIRS
+.PHONY : $(SUBDIRS)
+$(SUBDIRS) : 
+	@if [ -d $@ ]; then \
+		$(MAKE) --no-print-directory --directory=$@ $(MAKECMDGOALS); \
+	fi
+	$(BUILD_COMPLETE)
+endif   
 
 test-camera :
 	camorama --device $(CAMERA_DEV) --width 620 --height 480
