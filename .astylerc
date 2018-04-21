@@ -1,0 +1,12 @@
+--style=k&r
+--indent=spaces=4
+--convert-tabs
+--add-brackets
+--pad-header
+# --pad-comma
+--pad-oper
+--align-pointer=name
+--max-code-length=80
+--lineend=linux
+--suffix=.astyle.orig
+
