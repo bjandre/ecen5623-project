@@ -2,8 +2,6 @@
 #include <iostream>
 #include <math.h>
 
-using namespace cv;
-using namespace std;
 
 #define SQUARE(x) ((x)*(x))
 
