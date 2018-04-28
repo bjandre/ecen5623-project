@@ -240,7 +240,7 @@ int main(int argc, char **argv)
 
     // Create Sequencer thread, which like a cyclic executive, is highest prio
     printf("Start sequencer\n");
-    threadParams[0].sequencePeriods = 900;
+    threadParams[0].sequencePeriods = 9000;
 
     // Sequencer = RT_MAX   @ 30 Hz
     //
@@ -289,19 +289,28 @@ void *Service_1(void *threadp)
         S1Cnt++;
 
         cap >> src;
+        Mat bgr[3];
+        split(src, bgr);
+        Mat red = bgr[2];
+        write_ui(red, i++);
+        Mat red_threshold;
+        int threshold_type_binary = 0;
+        int max_binary_value = 255;
+        int threshold_cutoff = 220;
+        threshold(red, red_threshold, threshold_cutoff, max_binary_value, threshold_type_binary);
+        write_ui(red_threshold, i++);
 
-        write_ui(src, i++);
-        goal.draw(src);
+        goal.draw(red_threshold);
 
         o.move();
-        o.draw(src);
+        o.draw(red_threshold);
 
         if (detect_collision(goal, o)) {
             putText(src, "Collision!", Point(40, 40), FONT_HERSHEY_COMPLEX_SMALL, 5,
                     Scalar(100, 100, 100), 1, CV_AA);
         }
 
-        imshow("Video", src);
+        imshow("Video", red_threshold);
         int c = cvWaitKey(10);
         //If 'ESC' is pressed, break the loop
         if ((char)c == 27 ) {
