@@ -8,6 +8,6 @@ using namespace std;
 
 int init_camera(VideoCapture* cap, int hres, int vres);
 
-int write_ui(Mat image, int score);
+void write_ui(Mat image, int score);
 
 #endif

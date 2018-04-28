@@ -41,8 +41,7 @@ void Obstacle::draw(Mat image)
 
 int draw_all(Mat image, Vector<GameObj> &goCollection)
 {
-  int i;
-  for(i = 0; i < goCollection.size(); ++i)
+  for(uint32_t i = 0; i < goCollection.size(); ++i)
   {
     goCollection[i].draw(image);
   }
@@ -64,8 +63,7 @@ int detect_collision(GameObj &go1, GameObj &go2)
 
 int detect_collision(GameObj &go1, Vector<GameObj> &goCollection)
 {
-  int i;
-  for(i = 0; i < goCollection.size(); ++i)
+  for(uint32_t i = 0; i < goCollection.size(); ++i)
   {
     if(detect_collision(go1, goCollection[i]))
     {

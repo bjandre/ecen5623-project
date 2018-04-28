@@ -38,15 +38,15 @@ CPPFLAGS = -E
 # flags to automatically generate dependency information
 DEPENDS_FLAGS = -MT $@ -MMD -MP -MF $(DEPENDS_DIR)/$*.Td
 
-LDFLAGS = $(LDFLAGS) \
+LDFLAGS += \
         -dynamic-linker \
         -Map=$*.map
 
-LDLIBS = $(LDLIBS) \
+LDLIBS += \
         -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed \
 
 CXX_LDFLAGS =
-CXX_LDLIBS = -lpthread -lrt
+CXX_LDLIBS += -lpthread -lrt
 
 #
 # Generic rule to generate various targets

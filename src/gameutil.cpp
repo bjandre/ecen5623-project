@@ -41,10 +41,9 @@ int init_camera(VideoCapture* cap, int hres, int vres)
 }
 
 
-int write_ui(Mat image, int score)
+void write_ui(Mat image, int score)
 {
   std::string scoreString = "Score: " + SSTR(score);
 
-  putText(image, scoreString, SCORE_POS, FONT_HERSHEY_COMPLEX_SMALL, TEXT_SIZE, TEXT_COLOR, 1, CV_AA);
-  
+  putText(image, scoreString, SCORE_POS, FONT_HERSHEY_COMPLEX_SMALL, TEXT_SIZE, TEXT_COLOR, 1, CV_AA); 
 }
