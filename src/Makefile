@@ -1,6 +1,6 @@
 include constants.makefile
 
-EXE = vid-cursor.$(EXE_EXTENSION)
+EXE = laser-game.$(EXE_EXTENSION)
 
 SRCS = \
 	main.cc \

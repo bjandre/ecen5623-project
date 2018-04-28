@@ -86,6 +86,8 @@
 #include <cstdlib>
 #include <unistd.h>
 
+#include <iostream>
+
 #include <pthread.h>
 #include <sched.h>
 #include <time.h>
@@ -134,7 +136,8 @@ int main(int argc, char **argv)
     pid_t mainpid;
     cpu_set_t allcpuset;
 
-    printf("Starting Sequencer Demo\n");
+    std::cout << "red laser pointer cursor game" << std::endl;
+
     gettimeofday(&start_time_val, (struct timezone *)0);
     gettimeofday(&current_time_val, (struct timezone *)0);
     syslog(LOG_CRIT, "Sequencer @ sec=%d, msec=%d\n",
@@ -191,8 +194,9 @@ int main(int argc, char **argv)
 
     rc = sched_getparam(mainpid, &main_param);
     main_param.sched_priority = rt_max_prio;
-    rc = sched_setscheduler(getpid(), SCHED_FIFO, &main_param);
+    rc = sched_setscheduler(mainpid, SCHED_FIFO, &main_param);
     if (rc < 0) {
+        printf("ERROR: can not set SCHED_FIFO. Did you run with sudo?\n");
         perror("main_param");
     }
     print_scheduler();
