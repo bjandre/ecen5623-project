@@ -19,9 +19,8 @@
 // FIXME(bja, 2018-04) these need to be protected. should probably be moved into
 // modules for each service.
 
-int abortS1 = false, abortS2 = false, abortS3 = false, abortS4 = false,
-    abortS5 = false, abortS6 = false, abortS7 = false;
-sem_t semS1, semS2, semS3, semS4, semS5, semS6, semS7;
+int abortS1 = false;
+sem_t semS1;
 struct timeval start_time_val;
 
 /**

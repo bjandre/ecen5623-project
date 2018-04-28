@@ -104,8 +104,8 @@
 
 #include "thread_context.hpp"
 
-extern int abortS1, abortS2, abortS3, abortS4, abortS5, abortS6, abortS7;
-extern sem_t semS1, semS2, semS3, semS4, semS5, semS6, semS7;
+extern int abortS1;
+extern sem_t semS1;
 extern struct timeval start_time_val;
 
 int abortTest = false;
@@ -173,35 +173,6 @@ void *sequencer(void *context)
             sem_post(&semS1);
         }
 
-        // Service_2 = RT_MAX-2 @ 1 Hz
-        if ((seqCnt % 30) == 0) {
-            sem_post(&semS2);
-        }
-
-        // Service_3 = RT_MAX-3 @ 0.5 Hz
-        if ((seqCnt % 60) == 0) {
-            sem_post(&semS3);
-        }
-
-        // Service_4 = RT_MAX-2 @ 1 Hz
-        if ((seqCnt % 30) == 0) {
-            sem_post(&semS4);
-        }
-
-        // Service_5 = RT_MAX-3 @ 0.5 Hz
-        if ((seqCnt % 60) == 0) {
-            sem_post(&semS5);
-        }
-
-        // Service_6 = RT_MAX-2 @ 1 Hz
-        if ((seqCnt % 30) == 0) {
-            sem_post(&semS6);
-        }
-
-        // Service_7 = RT_MIN   0.1 Hz
-        if ((seqCnt % 300) == 0) {
-            sem_post(&semS7);
-        }
 
         //gettimeofday(&current_time_val, (struct timezone *)0);
         //syslog(LOG_CRIT, "Sequencer release all sub-services @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
@@ -209,19 +180,7 @@ void *sequencer(void *context)
     } while (!abortTest && (seqCnt < threadParams->sequencePeriods));
 
     sem_post(&semS1);
-    sem_post(&semS2);
-    sem_post(&semS3);
-    sem_post(&semS4);
-    sem_post(&semS5);
-    sem_post(&semS6);
-    sem_post(&semS7);
     abortS1 = true;
-    abortS2 = true;
-    abortS3 = true;
-    abortS4 = true;
-    abortS5 = true;
-    abortS6 = true;
-    abortS7 = true;
 
     pthread_exit((void *)0);
 }
