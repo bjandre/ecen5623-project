@@ -99,6 +99,12 @@
 
 #include <errno.h>
 
+#include <opencv2/opencv.hpp>
+#include "gameutil.hpp"
+#include "gameobjects.hpp"
+
+using namespace cv;
+
 #include "utils.hpp"
 #include "constants.hpp"
 #include "globals.hpp"
@@ -269,9 +275,40 @@ void *Service_1(void *threadp)
            (int)(current_time_val.tv_sec - start_time_val.tv_sec),
            (int)current_time_val.tv_usec / USEC_PER_MSEC);
 
+    Mat src;
+    VideoCapture cap;
+
+    init_camera(&cap, 640, 480);
+    Goal goal(Point(75, 75) , 40);
+    Obstacle o(Point(165, 55) , 40, Point(-2, 0));
+    cvNamedWindow("Video");
+
+    int i = 0;
     while (!abortS1) {
         sem_wait(&semS1);
         S1Cnt++;
+
+        cap >> src;
+
+        write_ui(src, i++);
+        goal.draw(src);
+
+        o.move();
+        o.draw(src);
+
+        if (detect_collision(goal, o)) {
+            putText(src, "Collision!", Point(40, 40), FONT_HERSHEY_COMPLEX_SMALL, 5,
+                    Scalar(100, 100, 100), 1, CV_AA);
+        }
+
+        imshow("Video", src);
+        int c = cvWaitKey(10);
+        //If 'ESC' is pressed, break the loop
+        if ((char)c == 27 ) {
+            break;
+        }
+
+
 
         gettimeofday(&current_time_val, (struct timezone *)0);
         syslog(LOG_CRIT, "Frame Sampler release %llu @ sec=%d, msec=%d\n", S1Cnt,
@@ -279,6 +316,7 @@ void *Service_1(void *threadp)
                (int)current_time_val.tv_usec / USEC_PER_MSEC);
     }
 
+    cvDestroyAllWindows();
     pthread_exit((void *)0);
 }
 
