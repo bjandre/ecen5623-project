@@ -3,12 +3,14 @@ include constants.makefile
 EXE = laser-game.$(EXE_EXTENSION)
 
 SRCS = \
-	main.cc \
-	sequencer.cc \
-	utils.cc \
-	globals.cc
+	main.cpp \
+	sequencer.cpp \
+	utils.cpp \
+	globals.cpp
 
-OBJS = $(SRCS:%.cc=%.o)
+OBJS = $(SRCS:%.cpp=%.o)
+
+LDLIBS = -lopencv_core
 
 include generic-rules.makefile
 

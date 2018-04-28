@@ -98,11 +98,11 @@
 
 #include <errno.h>
 
-#include "utils.h"
-#include "constants.h"
-#include "globals.h"
+#include "utils.hpp"
+#include "constants.hpp"
+#include "globals.hpp"
 
-#include "thread_context.h"
+#include "thread_context.hpp"
 
 extern int abortS1, abortS2, abortS3, abortS4, abortS5, abortS6, abortS7;
 extern sem_t semS1, semS2, semS3, semS4, semS5, semS6, semS7;

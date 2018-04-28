@@ -14,7 +14,7 @@
 
 #include <semaphore.h>
 
-#include "globals.h"
+#include "globals.hpp"
 
 // FIXME(bja, 2018-04) these need to be protected. should probably be moved into
 // modules for each service.

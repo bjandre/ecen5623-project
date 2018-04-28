@@ -99,12 +99,12 @@
 
 #include <errno.h>
 
-#include "utils.h"
-#include "constants.h"
-#include "globals.h"
+#include "utils.hpp"
+#include "constants.hpp"
+#include "globals.hpp"
 
-#include "thread_context.h"
-#include "sequencer.h"
+#include "thread_context.hpp"
+#include "sequencer.hpp"
 
 #define NUM_THREADS (7+1)
 

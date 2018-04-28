@@ -26,7 +26,7 @@
 
 #include <errno.h>
 
-#include "utils.h"
+#include "utils.hpp"
 
 double getTimeMsec(void)
 {

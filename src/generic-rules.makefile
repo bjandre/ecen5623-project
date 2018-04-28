@@ -53,16 +53,16 @@ CXX_LDLIBS = -lpthread -lrt
 #
 $(shell mkdir -p $(DEPENDS_DIR))
 
-%.o : %.cc
-%.o : %.cc $(DEPENDS_DIR)/%.d
+%.o : %.cpp
+%.o : %.cpp $(DEPENDS_DIR)/%.d
 	echo $(CXX) $(DEPENDS_FLAGS) $(CXXFLAGS) $(INCLUDES) -c -o $@ $<
 	$(CXX) $(DEPENDS_FLAGS) $(CXXFLAGS) $(INCLUDES) -c -o $@ $<
 	$(POSTCOMPILE)
 
-%.i : %.cc
+%.i : %.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLUDES) -c -o $*.i $<
 
-%.asm : %.cc
+%.asm : %.cpp
 	$(CXX) $(C_ASM_FLAGS) $(CXXFLAGS) $(INCLUDES) -c -o $*.asm $<
 
 %.o : %.S
@@ -86,7 +86,7 @@ endif
 $(DEPENDS_DIR)/%.d : ;
 .PRECIOUS : $(DEPENDS_DIR)/%.d
 
--include $(SRCS:%.cc=$(DEPENDS_DIR)/%.d)
+-include $(SRCS:%.cpp=$(DEPENDS_DIR)/%.d)
 
 .PHONY : all
 all : $(SUBDIRS) $(LIB) $(STARTUP_LIB) $(EXE) $(BIN)
