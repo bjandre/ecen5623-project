@@ -3,12 +3,12 @@ include constants.makefile
 EXE = vid-cursor.$(EXE_EXTENSION)
 
 SRCS = \
-	main.c \
-	sequencer.c \
-	utils.c \
-	globals.c
+	main.cc \
+	sequencer.cc \
+	utils.cc \
+	globals.cc
 
-OBJS = $(SRCS:%.c=%.o)
+OBJS = $(SRCS:%.cc=%.o)
 
 include generic-rules.makefile
 

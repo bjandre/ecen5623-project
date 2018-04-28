@@ -26,7 +26,7 @@ test-camera :
 
 .PHONY : astyle
 astyle : FORCE
-	astyle --options=.astylerc --recursive *.c *.h
+	astyle --options=.astylerc --recursive *.cc *.h
 
 .PHONY : clean
 clean : $(SUBDIRS)

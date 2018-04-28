@@ -9,7 +9,7 @@
 */
 
 // This is necessary for CPU affinity macros in Linux
-#define _GNU_SOURCE
+// #define _GNU_SOURCE
 
 #include <stdio.h>
 #include <stdlib.h>

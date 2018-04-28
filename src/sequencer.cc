@@ -80,7 +80,7 @@
 //    where RM policy is required over the set of cores.
 
 // This is necessary for CPU affinity macros in Linux
-#define _GNU_SOURCE
+// #define _GNU_SOURCE
 
 #include <stdbool.h>
 #include <stdio.h>

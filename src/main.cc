@@ -1,5 +1,4 @@
-/* ========================================================================== */
-/*                                                                            */
+//
 // Sam Siewert, December 2017
 //
 // Sequencer Generic
@@ -80,11 +79,11 @@
 //    where RM policy is required over the set of cores.
 
 // This is necessary for CPU affinity macros in Linux
-#define _GNU_SOURCE
+// #define _GNU_SOURCE
 
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdbool>
+#include <cstdio>
+#include <cstdlib>
 #include <unistd.h>
 
 #include <pthread.h>
@@ -123,7 +122,7 @@ void *Service_7(void *threadp);
 int main(int argc, char **argv)
 {
     struct timeval current_time_val;
-    int i, rc, scope;
+    int rc, scope;
     cpu_set_t threadcpu;
     pthread_t threads[NUM_THREADS];
     threadParams_t threadParams[NUM_THREADS];
@@ -147,7 +146,7 @@ int main(int argc, char **argv)
 
     CPU_ZERO(&allcpuset);
 
-    for (i = 0; i < NUM_CPU_CORES; i++) {
+    for (uint32_t i = 0; i < NUM_CPU_CORES; i++) {
         CPU_SET(i, &allcpuset);
     }
 
@@ -212,7 +211,7 @@ int main(int argc, char **argv)
     printf("rt_max_prio=%d\n", rt_max_prio);
     printf("rt_min_prio=%d\n", rt_min_prio);
 
-    for (i = 0; i < NUM_THREADS; i++) {
+    for (uint32_t i = 0; i < NUM_THREADS; i++) {
 
         CPU_ZERO(&threadcpu);
         CPU_SET(3, &threadcpu);
@@ -353,7 +352,7 @@ int main(int argc, char **argv)
     }
 
 
-    for (i = 0; i < NUM_THREADS; i++) {
+    for (uint32_t i = 0; i < NUM_THREADS; i++) {
         pthread_join(threads[i], NULL);
     }
 

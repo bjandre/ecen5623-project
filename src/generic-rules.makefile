@@ -1,5 +1,5 @@
-CC = cc
 CXX = c++
+
 AS = as
 
 AR = ar
@@ -12,13 +12,15 @@ SIZEFLAGS = --format=sysv -x
 OBJDUMP = objdump
 OBJDUMP_FLAGS = --disassemble-all --line-numbers --source --full-contents --all-headers
 
-STD_FLAGS = --std=c99
+STD_FLAGS = --std=c++14
 
 WARN_FLAGS = -Wall -Werror
 
 GENERAL_CFLAGS = $(STD_FLAGS) $(WARN_FLAGS)
 
 CFLAGS += $(RELEASE_CFLAGS) $(DEFINES) $(GENERAL_CFLAGS)
+
+CXXFLAGS += $(RELEASE_CFLAGS) $(DEFINES) $(GENERAL_CFLAGS)
 
 # NOTE(bja, 2017-03) --warn and --fatal-warnings are only used when calling as
 # directly, not when calling with the gcc wrapper.
@@ -43,30 +45,31 @@ LDFLAGS = $(LDFLAGS) \
 LDLIBS = $(LDLIBS) \
         -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed \
 
-CC_LDFLAGS =
-CC_LDLIBS = -lpthread -lrt
+CXX_LDFLAGS =
+CXX_LDLIBS = -lpthread -lrt
 
 #
 # Generic rule to generate various targets
 #
 $(shell mkdir -p $(DEPENDS_DIR))
 
-%.o : %.c
-%.o : %.c $(DEPENDS_DIR)/%.d
-	$(CC) $(DEPENDS_FLAGS) $(CFLAGS) $(INCLUDES) -c -o $@ $<
+%.o : %.cc
+%.o : %.cc $(DEPENDS_DIR)/%.d
+	echo $(CXX) $(DEPENDS_FLAGS) $(CXXFLAGS) $(INCLUDES) -c -o $@ $<
+	$(CXX) $(DEPENDS_FLAGS) $(CXXFLAGS) $(INCLUDES) -c -o $@ $<
 	$(POSTCOMPILE)
 
-%.i : %.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDES) -c -o $*.i $<
+%.i : %.cc
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLUDES) -c -o $*.i $<
 
-%.asm : %.c
-	$(CC) $(C_ASM_FLAGS) $(CFLAGS) $(INCLUDES) -c -o $*.asm $<
+%.asm : %.cc
+	$(CXX) $(C_ASM_FLAGS) $(CXXFLAGS) $(INCLUDES) -c -o $*.asm $<
 
 %.o : %.S
 	$(AS) $(ASMFLAGS) $(INCLUDES) -c -o $@ $<
 
 $(EXE) : $(DEPEND_STARTUP) $(OBJS) $(DEPEND_LIBS)
-	$(CC) $(CFLAGS) $(CC_LDFLAGS) $(DEBUG_CC_LINK) -o $@ $^ $(DEPEND_STARTUP) $(CC_LDLIBS)
+	$(CXX) $(CXXFLAGS) $(CXX_LDFLAGS) $(DEBUG_CC_LINK) -o $@ $^ $(DEPEND_STARTUP) $(CXX_LDLIBS)
 
 #
 # macro for executing TARGET in all SUBDIRS
@@ -83,7 +86,7 @@ endif
 $(DEPENDS_DIR)/%.d : ;
 .PRECIOUS : $(DEPENDS_DIR)/%.d
 
--include $(SRCS:%.c=$(DEPENDS_DIR)/%.d)
+-include $(SRCS:%.cc=$(DEPENDS_DIR)/%.d)
 
 .PHONY : all
 all : $(SUBDIRS) $(LIB) $(STARTUP_LIB) $(EXE) $(BIN)

@@ -8,7 +8,7 @@
 ** with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 */
 
-#define _GNU_SOURCE
+// #define _GNU_SOURCE
 #include <stdbool.h>
 #include <stdint.h>
 
