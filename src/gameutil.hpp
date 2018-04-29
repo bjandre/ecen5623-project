@@ -6,7 +6,7 @@
 using namespace cv;
 using namespace std;
 
-int init_camera(VideoCapture* cap, int hres, int vres);
+int init_camera(VideoCapture *cap, int hres, int vres);
 
 void write_ui(Mat image, int score);
 

@@ -11,39 +11,35 @@
 #define TEXT_COLOR Scalar(200,200,250)
 #define TEXT_SIZE 1
 
-int init_camera(VideoCapture* cap, int hres, int vres)
+int init_camera(VideoCapture *cap, int hres, int vres)
 {
-  int i;
-  for(i = 0; i < RETRY_NUM; ++i)
-  {
-    cap->open(i);
+    int i;
+    for (i = 0; i < RETRY_NUM; ++i) {
+        cap->open(i);
 
-    if(!cap->isOpened())
-    {
-      cout << "Failed to open camera " << i << endl;
+        if (!cap->isOpened()) {
+            cout << "Failed to open camera " << i << endl;
+        } else {
+            break;
+        }
     }
-    else
-    {
-      break;
+
+    if (!cap->isOpened()) {
+        cout << "Failed to open video stream" << endl;
+        return -1;
     }
-  }
 
-  if(!cap->isOpened())
-  {
-    cout << "Failed to open video stream" << endl;
-    return -1;
-  }
+    cap->set(CV_CAP_PROP_FRAME_WIDTH, hres);
+    cap->set(CV_CAP_PROP_FRAME_HEIGHT, vres);
 
-  cap->set(CV_CAP_PROP_FRAME_WIDTH,hres);
-  cap->set(CV_CAP_PROP_FRAME_HEIGHT,vres);
-
-  return 1;
+    return 1;
 }
 
 
 void write_ui(Mat image, int score)
 {
-  std::string scoreString = "Score: " + SSTR(score);
+    std::string scoreString = "Score: " + SSTR(score);
 
-  putText(image, scoreString, SCORE_POS, FONT_HERSHEY_COMPLEX_SMALL, TEXT_SIZE, TEXT_COLOR, 1, CV_AA); 
+    putText(image, scoreString, SCORE_POS, FONT_HERSHEY_COMPLEX_SMALL, TEXT_SIZE,
+            TEXT_COLOR, 1, CV_AA);
 }

@@ -9,7 +9,7 @@ using namespace std;
 
 class GameObj
 {
-  public:
+public:
     Point pos;
     int size;
     virtual void draw(Mat image) = 0;
@@ -17,14 +17,14 @@ class GameObj
 
 class Goal: public GameObj
 {
-  public:
+public:
     Goal(Point position, int radius);
     void draw(Mat image);
 };
 
 class Obstacle: public GameObj
 {
-  public:
+public:
     Point speed;
     Obstacle(Point position, int radius, Point moveSpeed);
     void move();

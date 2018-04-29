@@ -119,7 +119,7 @@ extern int abortS1;
 extern sem_t semS1;
 extern struct timeval start_time_val;
 
-Mat src,acc;
+Mat src, acc;
 
 void *Service_1(void *threadp);
 void *Service_2(void *threadp);
@@ -305,7 +305,7 @@ void *Service_1(void *threadp)
     }
 
     cvDestroyAllWindows();
-    pthread_exit((void *)0);    
+    pthread_exit((void *)0);
 }
 
 //laser tracking and collision detection service
@@ -348,7 +348,7 @@ void *Service_2(void *threadp)
     }
 
     cvDestroyAllWindows();
-    pthread_exit((void *)0);    
+    pthread_exit((void *)0);
 }
 
 //rendering service
