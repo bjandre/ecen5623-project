@@ -112,14 +112,18 @@ using namespace cv;
 #include "thread_context.hpp"
 #include "sequencer.hpp"
 
-#define NUM_WORK_THREADS (1)
+#define NUM_WORK_THREADS (3)
 #define NUM_THREADS (NUM_WORK_THREADS + 1)
 
 extern int abortS1;
 extern sem_t semS1;
+extern int abortS2;
+extern sem_t semS2;
+extern int abortS3;
+extern sem_t semS3;
 extern struct timeval start_time_val;
 
-Mat src, acc;
+Mat src, rsrc, acc;
 
 void *Service_1(void *threadp);
 void *Service_2(void *threadp);
@@ -286,7 +290,6 @@ void *Service_1(void *threadp)
 
     init_camera(&cap, 640, 480);
 
-    int i = 0;
     while (!abortS1) {
         sem_wait(&semS1);
         S1Cnt++;
@@ -295,8 +298,10 @@ void *Service_1(void *threadp)
 
         split(src, bgr);
 
+        bgr[2].copyTo(rsrc);
+
         //update the background model
-        accumulateWeighted(bgr[2], acc, 0.1);
+        accumulateWeighted(rsrc, acc, 0.1);
 
         gettimeofday(&current_time_val, (struct timezone *)0);
         syslog(LOG_CRIT, "Frame Sampler release %llu @ sec=%d, msec=%d\n", S1Cnt,
@@ -312,7 +317,7 @@ void *Service_1(void *threadp)
 void *Service_2(void *threadp)
 {
     struct timeval current_time_val;
-    unsigned long long S1Cnt = 0;
+    unsigned long long S2Cnt = 0;
 
     gettimeofday(&current_time_val, (struct timezone *)0);
     syslog(LOG_CRIT, "Frame Sampler thread @ sec=%d, msec=%d\n",
@@ -322,16 +327,16 @@ void *Service_2(void *threadp)
            (int)(current_time_val.tv_sec - start_time_val.tv_sec),
            (int)current_time_val.tv_usec / USEC_PER_MSEC);
 
+    Mat accScaled,sub;
 
-    int i = 0;
-    while (!abortS1) {
-        sem_wait(&semS1);
-        S1Cnt++;
+    while (!abortS2) {
+        sem_wait(&semS2);
+        S2Cnt++;
 
         // Scale it to 8-bit unsigned
         convertScaleAbs(acc, accScaled);
 
-        absdiff(bgr[2], accScaled, sub);
+        absdiff(rsrc, accScaled, sub);
 
         threshold(sub, sub, 25, 255, THRESH_BINARY);
 
@@ -355,7 +360,7 @@ void *Service_2(void *threadp)
 void *Service_3(void *threadp)
 {
     struct timeval current_time_val;
-    unsigned long long S1Cnt = 0;
+    unsigned long long S3Cnt = 0;
 
     gettimeofday(&current_time_val, (struct timezone *)0);
     syslog(LOG_CRIT, "Frame Sampler thread @ sec=%d, msec=%d\n",
@@ -371,9 +376,9 @@ void *Service_3(void *threadp)
     cvNamedWindow("Video");
 
     int i = 0;
-    while (!abortS1) {
-        sem_wait(&semS1);
-        S1Cnt++;
+    while (!abortS3) {
+        sem_wait(&semS3);
+        S3Cnt++;
 
         src.copyTo(disp);
 
