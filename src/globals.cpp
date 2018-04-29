@@ -21,10 +21,10 @@
 
 int abortS1 = false;
 sem_t semS1;
-int abortS1 = false;
-sem_t semS1;
-int abortS1 = false;
-sem_t semS1;
+int abortS2 = false;
+sem_t semS2;
+int abortS3 = false;
+sem_t semS3;
 struct timeval start_time_val;
 
 /**
