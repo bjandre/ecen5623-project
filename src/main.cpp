@@ -337,7 +337,7 @@ void *Service_1(void *threadp)
     cap >> src;
     split(src, bgr);
     acc = Mat::zeros(bgr[2].size(), CV_32FC1);
-    
+
     while (!abortS1) {
         sem_wait(&semS1);
         S1Cnt++;
@@ -368,10 +368,10 @@ void *Service_2(void *threadp)
     unsigned long long S2Cnt = 0;
 
     gettimeofday(&current_time_val, (struct timezone *)0);
-    syslog(LOG_CRIT, "Frame Sampler thread @ sec=%d, msec=%d\n",
+    syslog(LOG_CRIT, "Tracking and collision detection thread @ sec=%d, msec=%d\n",
            (int)(current_time_val.tv_sec - start_time_val.tv_sec),
            (int)current_time_val.tv_usec / USEC_PER_MSEC);
-    printf("Frame Sampler thread @ sec=%d, msec=%d\n",
+    printf("Tracking and collision detection thread @ sec=%d, msec=%d\n",
            (int)(current_time_val.tv_sec - start_time_val.tv_sec),
            (int)current_time_val.tv_usec / USEC_PER_MSEC);
 
@@ -395,7 +395,7 @@ void *Service_2(void *threadp)
 
 
         gettimeofday(&current_time_val, (struct timezone *)0);
-        syslog(LOG_CRIT, "Frame Sampler release %llu @ sec=%d, msec=%d\n", S2Cnt,
+        syslog(LOG_CRIT, "Tracking and collision detection release %llu @ sec=%d, msec=%d\n", S2Cnt,
                (int)(current_time_val.tv_sec - start_time_val.tv_sec),
                (int)current_time_val.tv_usec / USEC_PER_MSEC);
     }
@@ -411,10 +411,10 @@ void *Service_3(void *threadp)
     unsigned long long S3Cnt = 0;
 
     gettimeofday(&current_time_val, (struct timezone *)0);
-    syslog(LOG_CRIT, "Frame Sampler thread @ sec=%d, msec=%d\n",
+    syslog(LOG_CRIT, "Rendering thread @ sec=%d, msec=%d\n",
            (int)(current_time_val.tv_sec - start_time_val.tv_sec),
            (int)current_time_val.tv_usec / USEC_PER_MSEC);
-    printf("Frame Sampler thread @ sec=%d, msec=%d\n",
+    printf("Rendering thread @ sec=%d, msec=%d\n",
            (int)(current_time_val.tv_sec - start_time_val.tv_sec),
            (int)current_time_val.tv_usec / USEC_PER_MSEC);
 
@@ -446,7 +446,7 @@ void *Service_3(void *threadp)
         }
 
         gettimeofday(&current_time_val, (struct timezone *)0);
-        syslog(LOG_CRIT, "Frame Sampler release %llu @ sec=%d, msec=%d\n", S3Cnt,
+        syslog(LOG_CRIT, "Rendering release %llu @ sec=%d, msec=%d\n", S3Cnt,
                (int)(current_time_val.tv_sec - start_time_val.tv_sec),
                (int)current_time_val.tv_usec / USEC_PER_MSEC);
     }
