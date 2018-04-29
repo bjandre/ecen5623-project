@@ -327,7 +327,7 @@ void *Service_2(void *threadp)
            (int)(current_time_val.tv_sec - start_time_val.tv_sec),
            (int)current_time_val.tv_usec / USEC_PER_MSEC);
 
-    Mat accScaled,sub;
+    Mat accScaled, sub;
 
     while (!abortS2) {
         sem_wait(&semS2);
