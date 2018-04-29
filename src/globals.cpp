@@ -21,6 +21,10 @@
 
 int abortS1 = false;
 sem_t semS1;
+int abortS1 = false;
+sem_t semS1;
+int abortS1 = false;
+sem_t semS1;
 struct timeval start_time_val;
 
 /**

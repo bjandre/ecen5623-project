@@ -172,6 +172,16 @@ int main(int argc, char **argv)
         exit (-1);
     }
 
+    if (sem_init (&semS2, 0, 0)) {
+        printf ("Failed to initialize S1 semaphore\n");
+        exit (-1);
+    }
+
+    if (sem_init (&semS3, 0, 0)) {
+        printf ("Failed to initialize S1 semaphore\n");
+        exit (-1);
+    }
+
     mainpid = getpid();
 
     rt_max_prio = sched_get_priority_max(SCHED_FIFO);
