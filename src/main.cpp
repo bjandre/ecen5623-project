@@ -437,7 +437,9 @@ void *Service_3(void *threadp)
                     Scalar(100, 100, 100), 1, CV_AA);
         }
 
-        imshow("Video", disp);
+        if(!disp.empty()) {
+            imshow("Video", disp);
+        }
 
         gettimeofday(&current_time_val, (struct timezone *)0);
         syslog(LOG_CRIT, "Frame Sampler release %llu @ sec=%d, msec=%d\n", S3Cnt,
