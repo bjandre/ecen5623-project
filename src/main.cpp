@@ -347,7 +347,7 @@ void *Service_2(void *threadp)
 
 
         gettimeofday(&current_time_val, (struct timezone *)0);
-        syslog(LOG_CRIT, "Frame Sampler release %llu @ sec=%d, msec=%d\n", S1Cnt,
+        syslog(LOG_CRIT, "Frame Sampler release %llu @ sec=%d, msec=%d\n", S2Cnt,
                (int)(current_time_val.tv_sec - start_time_val.tv_sec),
                (int)current_time_val.tv_usec / USEC_PER_MSEC);
     }
@@ -396,7 +396,7 @@ void *Service_3(void *threadp)
         imshow("Video", disp);
 
         gettimeofday(&current_time_val, (struct timezone *)0);
-        syslog(LOG_CRIT, "Frame Sampler release %llu @ sec=%d, msec=%d\n", S1Cnt,
+        syslog(LOG_CRIT, "Frame Sampler release %llu @ sec=%d, msec=%d\n", S3Cnt,
                (int)(current_time_val.tv_sec - start_time_val.tv_sec),
                (int)current_time_val.tv_usec / USEC_PER_MSEC);
     }
