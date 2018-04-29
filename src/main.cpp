@@ -119,7 +119,11 @@ extern int abortS1;
 extern sem_t semS1;
 extern struct timeval start_time_val;
 
+Mat src,acc;
+
 void *Service_1(void *threadp);
+void *Service_2(void *threadp);
+void *Service_3(void *threadp);
 
 
 int main(int argc, char **argv)
@@ -262,6 +266,7 @@ int main(int argc, char **argv)
     printf("\nTEST COMPLETE\n");
 }
 
+//frame grabbing and accumulating service
 void *Service_1(void *threadp)
 {
     struct timeval current_time_val;
@@ -275,10 +280,92 @@ void *Service_1(void *threadp)
            (int)(current_time_val.tv_sec - start_time_val.tv_sec),
            (int)current_time_val.tv_usec / USEC_PER_MSEC);
 
-    Mat src;
+
     VideoCapture cap;
+    Mat bgr[3];
 
     init_camera(&cap, 640, 480);
+
+    int i = 0;
+    while (!abortS1) {
+        sem_wait(&semS1);
+        S1Cnt++;
+
+        cap >> src;
+
+        split(src, bgr);
+
+        //update the background model
+        accumulateWeighted(bgr[2], acc, 0.1);
+
+        gettimeofday(&current_time_val, (struct timezone *)0);
+        syslog(LOG_CRIT, "Frame Sampler release %llu @ sec=%d, msec=%d\n", S1Cnt,
+               (int)(current_time_val.tv_sec - start_time_val.tv_sec),
+               (int)current_time_val.tv_usec / USEC_PER_MSEC);
+    }
+
+    cvDestroyAllWindows();
+    pthread_exit((void *)0);    
+}
+
+//laser tracking and collision detection service
+void *Service_2(void *threadp)
+{
+    struct timeval current_time_val;
+    unsigned long long S1Cnt = 0;
+
+    gettimeofday(&current_time_val, (struct timezone *)0);
+    syslog(LOG_CRIT, "Frame Sampler thread @ sec=%d, msec=%d\n",
+           (int)(current_time_val.tv_sec - start_time_val.tv_sec),
+           (int)current_time_val.tv_usec / USEC_PER_MSEC);
+    printf("Frame Sampler thread @ sec=%d, msec=%d\n",
+           (int)(current_time_val.tv_sec - start_time_val.tv_sec),
+           (int)current_time_val.tv_usec / USEC_PER_MSEC);
+
+
+    int i = 0;
+    while (!abortS1) {
+        sem_wait(&semS1);
+        S1Cnt++;
+
+        // Scale it to 8-bit unsigned
+        convertScaleAbs(acc, accScaled);
+
+        absdiff(bgr[2], accScaled, sub);
+
+        threshold(sub, sub, 25, 255, THRESH_BINARY);
+
+        //contour to find laser position
+
+
+        //detect collisions
+
+
+        gettimeofday(&current_time_val, (struct timezone *)0);
+        syslog(LOG_CRIT, "Frame Sampler release %llu @ sec=%d, msec=%d\n", S1Cnt,
+               (int)(current_time_val.tv_sec - start_time_val.tv_sec),
+               (int)current_time_val.tv_usec / USEC_PER_MSEC);
+    }
+
+    cvDestroyAllWindows();
+    pthread_exit((void *)0);    
+}
+
+//rendering service
+void *Service_3(void *threadp)
+{
+    struct timeval current_time_val;
+    unsigned long long S1Cnt = 0;
+
+    gettimeofday(&current_time_val, (struct timezone *)0);
+    syslog(LOG_CRIT, "Frame Sampler thread @ sec=%d, msec=%d\n",
+           (int)(current_time_val.tv_sec - start_time_val.tv_sec),
+           (int)current_time_val.tv_usec / USEC_PER_MSEC);
+    printf("Frame Sampler thread @ sec=%d, msec=%d\n",
+           (int)(current_time_val.tv_sec - start_time_val.tv_sec),
+           (int)current_time_val.tv_usec / USEC_PER_MSEC);
+
+    Mat disp;
     Goal goal(Point(75, 75) , 40);
     Obstacle o(Point(165, 55) , 40, Point(-2, 0));
     cvNamedWindow("Video");
@@ -288,27 +375,20 @@ void *Service_1(void *threadp)
         sem_wait(&semS1);
         S1Cnt++;
 
-        cap >> src;
+        src.copyTo(disp);
 
-        write_ui(src, i++);
-        goal.draw(src);
+        write_ui(disp, i++);
+        goal.draw(disp);
 
         o.move();
-        o.draw(src);
+        o.draw(disp);
 
         if (detect_collision(goal, o)) {
-            putText(src, "Collision!", Point(40, 40), FONT_HERSHEY_COMPLEX_SMALL, 5,
+            putText(disp, "Collision!", Point(40, 40), FONT_HERSHEY_COMPLEX_SMALL, 5,
                     Scalar(100, 100, 100), 1, CV_AA);
         }
 
-        imshow("Video", src);
-        int c = cvWaitKey(10);
-        //If 'ESC' is pressed, break the loop
-        if ((char)c == 27 ) {
-            break;
-        }
-
-
+        imshow("Video", disp);
 
         gettimeofday(&current_time_val, (struct timezone *)0);
         syslog(LOG_CRIT, "Frame Sampler release %llu @ sec=%d, msec=%d\n", S1Cnt,
