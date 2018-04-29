@@ -334,6 +334,10 @@ void *Service_1(void *threadp)
 
     init_camera(&cap, 640, 480);
 
+    cap >> src;
+    split(src, bgr);
+    acc = Mat::zeros(bgr[2].size(), CV_32FC1);
+    
     while (!abortS1) {
         sem_wait(&semS1);
         S1Cnt++;
