@@ -238,6 +238,40 @@ int main(int argc, char **argv)
     }
 
 
+    // Servcie_1 = RT_MAX-1 @ 3 Hz
+    //
+    rt_param[2].sched_priority = rt_max_prio - 2;
+    pthread_attr_setschedparam(&rt_sched_attr[2], &rt_param[2]);
+    rc = pthread_create(&threads[2],             // pointer to thread descriptor
+                        &rt_sched_attr[2],         // use specific attributes
+                        //(void *)0,               // default attributes
+                        Service_2,                 // thread function entry point
+                        (void *) & (threadParams[2]) // parameters to pass in
+                       );
+    if (rc < 0) {
+        perror("pthread_create for service 2");
+    } else {
+        printf("pthread_create successful for service 2\n");
+    }
+
+
+    // Servcie_1 = RT_MAX-1 @ 3 Hz
+    //
+    rt_param[3].sched_priority = rt_max_prio - 3;
+    pthread_attr_setschedparam(&rt_sched_attr[3], &rt_param[3]);
+    rc = pthread_create(&threads[3],             // pointer to thread descriptor
+                        &rt_sched_attr[3],         // use specific attributes
+                        //(void *)0,               // default attributes
+                        Service_3,                 // thread function entry point
+                        (void *) & (threadParams[3]) // parameters to pass in
+                       );
+    if (rc < 0) {
+        perror("pthread_create for service 3");
+    } else {
+        printf("pthread_create successful for service 3\n");
+    }
+
+
     // Wait for service threads to initialize and await release by sequencer.
     //
     // Note that the sleep is not necessary of RT service threads are created wtih
