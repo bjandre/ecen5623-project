@@ -115,6 +115,9 @@ using namespace cv;
 #define NUM_WORK_THREADS (3)
 #define NUM_THREADS (NUM_WORK_THREADS + 1)
 
+static const int MAX_MSG_LEN = 1024;
+static const bool debug = false;
+
 extern int abortS1;
 extern sem_t semS1;
 extern int abortS2;
@@ -288,7 +291,7 @@ int main(int argc, char **argv)
     // correct POSIX SCHED_FIFO priorities compared to non-RT priority of this main
     // program.
     //
-    // usleep(1000000);
+    usleep(1000000);
 
     // Create Sequencer thread, which like a cyclic executive, is highest prio
     printf("Start sequencer\n");
@@ -320,14 +323,15 @@ void *Service_1(void *threadp)
     struct timeval current_time_val;
     unsigned long long S1Cnt = 0;
 
-    gettimeofday(&current_time_val, (struct timezone *)0);
-    syslog(LOG_CRIT, "Frame Sampler thread @ sec=%d, msec=%d\n",
-           (int)(current_time_val.tv_sec - start_time_val.tv_sec),
-           (int)current_time_val.tv_usec / USEC_PER_MSEC);
-    printf("Frame Sampler thread @ sec=%d, msec=%d\n",
-           (int)(current_time_val.tv_sec - start_time_val.tv_sec),
-           (int)current_time_val.tv_usec / USEC_PER_MSEC);
+    char message[MAX_MSG_LEN];
 
+    gettimeofday(&current_time_val, (struct timezone *)0);
+    snprintf(message, MAX_MSG_LEN, "Frame Sampler thread @ sec=%d, msec=%d\n",
+             (int)(current_time_val.tv_sec - start_time_val.tv_sec),
+             (int)current_time_val.tv_usec / USEC_PER_MSEC);
+    if (debug) {
+        printf("%s", message);
+    }
 
     VideoCapture cap;
     Mat bgr[3];
@@ -352,12 +356,15 @@ void *Service_1(void *threadp)
         accumulateWeighted(rsrc, acc, 0.1);
 
         gettimeofday(&current_time_val, (struct timezone *)0);
-        syslog(LOG_CRIT, "Frame Sampler release %llu @ sec=%d, msec=%d\n", S1Cnt,
-               (int)(current_time_val.tv_sec - start_time_val.tv_sec),
-               (int)current_time_val.tv_usec / USEC_PER_MSEC);
+        snprintf(message, MAX_MSG_LEN, "Frame Sampler release %llu @ sec=%d, msec=%d\n",
+                 S1Cnt,
+                 (int)(current_time_val.tv_sec - start_time_val.tv_sec),
+                 (int)current_time_val.tv_usec / USEC_PER_MSEC);
+        if (debug) {
+            printf("%s", message);
+        }
     }
 
-    cvDestroyAllWindows();
     pthread_exit((void *)0);
 }
 
@@ -366,14 +373,15 @@ void *Service_2(void *threadp)
 {
     struct timeval current_time_val;
     unsigned long long S2Cnt = 0;
-
+    char message[MAX_MSG_LEN];
     gettimeofday(&current_time_val, (struct timezone *)0);
-    syslog(LOG_CRIT, "Tracking and collision detection thread @ sec=%d, msec=%d\n",
-           (int)(current_time_val.tv_sec - start_time_val.tv_sec),
-           (int)current_time_val.tv_usec / USEC_PER_MSEC);
-    printf("Tracking and collision detection thread @ sec=%d, msec=%d\n",
-           (int)(current_time_val.tv_sec - start_time_val.tv_sec),
-           (int)current_time_val.tv_usec / USEC_PER_MSEC);
+    snprintf(message, MAX_MSG_LEN,
+             "Tracking and collision detection thread @ sec=%d, msec=%d\n",
+             (int)(current_time_val.tv_sec - start_time_val.tv_sec),
+             (int)current_time_val.tv_usec / USEC_PER_MSEC);
+    if (debug) {
+        printf("%s", message);
+    }
 
     Mat accScaled, sub;
 
@@ -395,12 +403,15 @@ void *Service_2(void *threadp)
 
 
         gettimeofday(&current_time_val, (struct timezone *)0);
-        syslog(LOG_CRIT, "Tracking and collision detection release %llu @ sec=%d, msec=%d\n", S2Cnt,
-               (int)(current_time_val.tv_sec - start_time_val.tv_sec),
-               (int)current_time_val.tv_usec / USEC_PER_MSEC);
+        snprintf(message, MAX_MSG_LEN,
+                 "Tracking and collision detection release %llu @ sec=%d, msec=%d\n", S2Cnt,
+                 (int)(current_time_val.tv_sec - start_time_val.tv_sec),
+                 (int)current_time_val.tv_usec / USEC_PER_MSEC);
+        if (debug) {
+            printf("%s", message);
+        }
     }
 
-    cvDestroyAllWindows();
     pthread_exit((void *)0);
 }
 
@@ -409,14 +420,15 @@ void *Service_3(void *threadp)
 {
     struct timeval current_time_val;
     unsigned long long S3Cnt = 0;
+    char message[MAX_MSG_LEN];
 
     gettimeofday(&current_time_val, (struct timezone *)0);
-    syslog(LOG_CRIT, "Rendering thread @ sec=%d, msec=%d\n",
-           (int)(current_time_val.tv_sec - start_time_val.tv_sec),
-           (int)current_time_val.tv_usec / USEC_PER_MSEC);
-    printf("Rendering thread @ sec=%d, msec=%d\n",
-           (int)(current_time_val.tv_sec - start_time_val.tv_sec),
-           (int)current_time_val.tv_usec / USEC_PER_MSEC);
+    snprintf(message, MAX_MSG_LEN, "Rendering thread @ sec=%d, msec=%d\n",
+             (int)(current_time_val.tv_sec - start_time_val.tv_sec),
+             (int)current_time_val.tv_usec / USEC_PER_MSEC);
+    if (debug) {
+        printf("%s", message);
+    }
 
     Mat disp;
     Goal goal(Point(75, 75) , 40);
@@ -441,14 +453,23 @@ void *Service_3(void *threadp)
                     Scalar(100, 100, 100), 1, CV_AA);
         }
 
-        if(!disp.empty()) {
+        if (!disp.empty()) {
             imshow("Video", disp);
+            int c = cvWaitKey(10);
+            //If 'ESC' is pressed, break the loop
+            if ((char)c == 27 ) {
+                break;
+            }
         }
 
         gettimeofday(&current_time_val, (struct timezone *)0);
-        syslog(LOG_CRIT, "Rendering release %llu @ sec=%d, msec=%d\n", S3Cnt,
-               (int)(current_time_val.tv_sec - start_time_val.tv_sec),
-               (int)current_time_val.tv_usec / USEC_PER_MSEC);
+        snprintf(message, MAX_MSG_LEN, "Rendering release %llu @ sec=%d, msec=%d\n",
+                 S3Cnt,
+                 (int)(current_time_val.tv_sec - start_time_val.tv_sec),
+                 (int)current_time_val.tv_usec / USEC_PER_MSEC);
+        if (debug) {
+            printf("%s", message);
+        }
     }
 
     cvDestroyAllWindows();

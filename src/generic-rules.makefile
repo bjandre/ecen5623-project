@@ -55,7 +55,6 @@ $(shell mkdir -p $(DEPENDS_DIR))
 
 %.o : %.cpp
 %.o : %.cpp $(DEPENDS_DIR)/%.d
-	echo $(CXX) $(DEPENDS_FLAGS) $(CXXFLAGS) $(INCLUDES) -c -o $@ $<
 	$(CXX) $(DEPENDS_FLAGS) $(CXXFLAGS) $(INCLUDES) -c -o $@ $<
 	$(POSTCOMPILE)
 

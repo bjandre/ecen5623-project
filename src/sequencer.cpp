@@ -104,6 +104,9 @@
 
 #include "thread_context.hpp"
 
+static const int MAX_MSG_LEN = 1024;
+static const bool debug = false;
+
 extern int abortS1;
 extern sem_t semS1;
 extern int abortS2;
@@ -123,6 +126,7 @@ void *sequencer(void *context)
     int rc, delay_cnt = 0;
     unsigned long long seqCnt = 0;
     threadParams_t *threadParams = (threadParams_t *)context;
+    char message[MAX_MSG_LEN];
 
     gettimeofday(&current_time_val, (struct timezone *)0);
     syslog(LOG_CRIT, "Sequencer thread @ sec=%d, msec=%d\n",
@@ -136,8 +140,15 @@ void *sequencer(void *context)
         delay_cnt = 0;
         residual = 0.0;
 
-        //gettimeofday(&current_time_val, (struct timezone *)0);
-        //syslog(LOG_CRIT, "Sequencer thread prior to delay @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
+        gettimeofday(&current_time_val, (struct timezone *)0);
+        snprintf(message, MAX_MSG_LEN,
+                 "Sequencer thread prior to delay @ sec=%d, msec=%d\n",
+                 (int)(current_time_val.tv_sec - start_time_val.tv_sec),
+                 (int)current_time_val.tv_usec / USEC_PER_MSEC);
+        syslog(LOG_CRIT, "%s", message);
+        if (debug) {
+            printf("%s", message);
+        }
         do {
             rc = nanosleep(&delay_time, &remaining_time);
 
@@ -160,10 +171,13 @@ void *sequencer(void *context)
 
         seqCnt++;
         gettimeofday(&current_time_val, (struct timezone *)0);
-        syslog(LOG_CRIT, "Sequencer cycle %llu @ sec=%d, msec=%d\n", seqCnt,
-               (int)(current_time_val.tv_sec - start_time_val.tv_sec),
-               (int)current_time_val.tv_usec / USEC_PER_MSEC);
-
+        snprintf(message, MAX_MSG_LEN, "Sequencer cycle %llu @ sec=%d, msec=%d\n",
+                 seqCnt,
+                 (int)(current_time_val.tv_sec - start_time_val.tv_sec),
+                 (int)current_time_val.tv_usec / USEC_PER_MSEC);
+        if (debug) {
+            printf("%s", message);
+        }
 
         if (delay_cnt > 1) {
             printf("Sequencer looping delay %d\n", delay_cnt);
@@ -188,8 +202,14 @@ void *sequencer(void *context)
         }
 
 
-        //gettimeofday(&current_time_val, (struct timezone *)0);
-        //syslog(LOG_CRIT, "Sequencer release all sub-services @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
+        gettimeofday(&current_time_val, (struct timezone *)0);
+        snprintf(message, MAX_MSG_LEN,
+                 "Sequencer release all sub-services @ sec=%d, msec=%d\n",
+                 (int)(current_time_val.tv_sec - start_time_val.tv_sec),
+                 (int)current_time_val.tv_usec / USEC_PER_MSEC);
+        if (debug) {
+            printf("%s", message);
+        }
 
     } while (!abortTest && (seqCnt < threadParams->sequencePeriods));
 
