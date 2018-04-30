@@ -283,34 +283,48 @@ void *Service_1(void *threadp)
     Obstacle o(Point(165, 55) , 40, Point(-2, 0));
     cvNamedWindow("Video");
 
+    cap >> src;
+    Mat bgr[3];
+    split(src, bgr);
+    Mat acc = Mat::zeros(bgr[2].size(), CV_32FC1);
+    Mat accScaled, sub;
+
+
     int i = 0;
     while (!abortS1) {
         sem_wait(&semS1);
         S1Cnt++;
-
+	i++;
         cap >> src;
-        Mat bgr[3];
         split(src, bgr);
         Mat red = bgr[2];
-        write_ui(red, i++);
+        //write_ui(red, i++);
+        //update the background model
+        accumulateWeighted(red, acc, 0.1);
+
+        // Scale it to 8-bit unsigned
+        convertScaleAbs(acc, accScaled);
+        absdiff(red, accScaled, sub);
+
         Mat red_threshold;
-        int threshold_type_binary = 0;
+        int threshold_type_binary = THRESH_BINARY;
         int max_binary_value = 255;
         int threshold_cutoff = 220;
-        threshold(red, red_threshold, threshold_cutoff, max_binary_value, threshold_type_binary);
-        write_ui(red_threshold, i++);
+        threshold(sub, red_threshold, threshold_cutoff, max_binary_value, threshold_type_binary);
+        //write_ui(sub, i++);
 
-        goal.draw(red_threshold);
+
+        goal.draw(sub);
 
         o.move();
-        o.draw(red_threshold);
+        o.draw(sub);
 
         if (detect_collision(goal, o)) {
             putText(src, "Collision!", Point(40, 40), FONT_HERSHEY_COMPLEX_SMALL, 5,
                     Scalar(100, 100, 100), 1, CV_AA);
         }
 
-        imshow("Video", red_threshold);
+        imshow("Video", sub);
         int c = cvWaitKey(10);
         //If 'ESC' is pressed, break the loop
         if ((char)c == 27 ) {
