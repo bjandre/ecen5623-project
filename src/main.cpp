@@ -112,6 +112,8 @@ using namespace cv;
 #include "thread_context.hpp"
 #include "sequencer.hpp"
 
+#include "plog.h"
+
 #define NUM_WORK_THREADS (3)
 #define NUM_THREADS (NUM_WORK_THREADS + 1)
 
@@ -127,6 +129,8 @@ extern sem_t semS3;
 extern struct timeval start_time_val;
 
 Mat src, rsrc, acc;
+
+plog_buffer_t buff;
 
 void *Service_1(void *threadp);
 void *Service_2(void *threadp);
@@ -147,6 +151,8 @@ int main(int argc, char **argv)
     pthread_attr_t main_attr;
     pid_t mainpid;
     cpu_set_t allcpuset;
+
+    initPlogBuff(10000, &buff);
 
     std::cout << "red laser pointer cursor game" << std::endl;
 
@@ -314,6 +320,8 @@ int main(int argc, char **argv)
         pthread_join(threads[i], NULL);
     }
 
+    csvAppendPlogBuff(&buff, "results.csv");
+
     printf("\nTEST COMPLETE\n");
 }
 
@@ -322,6 +330,7 @@ void *Service_1(void *threadp)
 {
     struct timeval current_time_val;
     unsigned long long S1Cnt = 0;
+    plog_t *curr;
 
     char message[MAX_MSG_LEN];
 
@@ -344,6 +353,7 @@ void *Service_1(void *threadp)
 
     while (!abortS1) {
         sem_wait(&semS1);
+        getStartPlog(&buff, &curr, 1);
         S1Cnt++;
 
         cap >> src;
@@ -363,6 +373,8 @@ void *Service_1(void *threadp)
         if (debug) {
             printf("%s", message);
         }
+
+        endPlog(curr);
     }
 
     pthread_exit((void *)0);
@@ -373,7 +385,10 @@ void *Service_2(void *threadp)
 {
     struct timeval current_time_val;
     unsigned long long S2Cnt = 0;
+    plog_t *curr;
+
     char message[MAX_MSG_LEN];
+    
     gettimeofday(&current_time_val, (struct timezone *)0);
     snprintf(message, MAX_MSG_LEN,
              "Tracking and collision detection thread @ sec=%d, msec=%d\n",
@@ -387,6 +402,7 @@ void *Service_2(void *threadp)
 
     while (!abortS2) {
         sem_wait(&semS2);
+        getStartPlog(&buff, &curr, 2);
         S2Cnt++;
 
         // Scale it to 8-bit unsigned
@@ -410,6 +426,8 @@ void *Service_2(void *threadp)
         if (debug) {
             printf("%s", message);
         }
+
+        endPlog(curr);
     }
 
     pthread_exit((void *)0);
@@ -420,6 +438,8 @@ void *Service_3(void *threadp)
 {
     struct timeval current_time_val;
     unsigned long long S3Cnt = 0;
+    plog_t *curr;
+
     char message[MAX_MSG_LEN];
 
     gettimeofday(&current_time_val, (struct timezone *)0);
@@ -438,6 +458,7 @@ void *Service_3(void *threadp)
     int i = 0;
     while (!abortS3) {
         sem_wait(&semS3);
+        getStartPlog(&buff, &curr, 3);
         S3Cnt++;
 
         src.copyTo(disp);
@@ -470,6 +491,8 @@ void *Service_3(void *threadp)
         if (debug) {
             printf("%s", message);
         }
+
+        endPlog(curr);
     }
 
     cvDestroyAllWindows();
