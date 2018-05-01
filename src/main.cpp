@@ -112,7 +112,7 @@ using namespace cv;
 #include "thread_context.hpp"
 #include "sequencer.hpp"
 
-#include "plog.h"
+#include "plog.hpp"
 
 #define NUM_WORK_THREADS (3)
 #define NUM_THREADS (NUM_WORK_THREADS + 1)
