@@ -18,6 +18,7 @@ int getStartPlog(plog_buffer_t *buff, plog_t **log, uint32_t id)
 {
 	getPlog(buff, log);
 	startPlog(*log, id);
+	return 0;
 }
 
 int endPlog(plog_t *log)
@@ -28,6 +29,7 @@ int endPlog(plog_t *log)
 	}
 
 	clock_gettime(CLOCK_REALTIME, &(log->end));
+	return 0;
 }
 
 int getPlog(plog_buffer_t *buff, plog_t **log)
