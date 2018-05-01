@@ -9,7 +9,7 @@ SRCS = \
 	globals.cpp \
 	gameobjects.cpp \
 	gameutil.cpp \
-	plog.c
+	plog.cpp
 
 OBJS = $(SRCS:%.cpp=%.o)
 
