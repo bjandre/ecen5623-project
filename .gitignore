@@ -37,3 +37,4 @@ _depends
 doc/html/
 doc/latex/
 doxygen.warnings.log
+results.csv
