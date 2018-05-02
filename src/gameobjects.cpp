@@ -46,7 +46,6 @@ Player::Player(Point position, int radius)
 {
   pos = position;
   size = radius;
-  speed = moveSpeed;
 }
 
 void Player::reposition(Point position)
