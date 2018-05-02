@@ -432,7 +432,9 @@ void *Service_2(void *threadp)
         vector<Point2f>center( contours.size() );
         vector<float>radius( contours.size() );
 
-        for( int i = 0; i < contours.size(); i++ )
+        unsigned int i;
+
+        for(i = 0; i < contours.size(); i++)
         {
             approxPolyDP( Mat(contours[i]), contours_poly[i], 3, true );
             minEnclosingCircle( (Mat)contours_poly[i], center[i], radius[i] );
@@ -443,7 +445,7 @@ void *Service_2(void *threadp)
         Scalar color[] = {Scalar(255,0,0),Scalar(0,255,0),Scalar(0,0,255)};
 
         /// Draw polygonal contour + circles
-        for( int i = 0; i< (contours.size() & 3); i++ )
+        for(i = 0; i< (contours.size() & 3); i++)
          {
            circle( src, center[i], (int)radius[i], color[i], 2, 8, 0 );
          }
