@@ -48,6 +48,11 @@ Player::Player(Point position, int radius)
   size = radius;
 }
 
+void Player::move(Point position)
+{
+
+}
+
 void Player::reposition(Point position)
 {
   pos = position;
@@ -61,7 +66,7 @@ void Player::draw(Mat image)
 
 int move_all(Vector<GameObj> &goCollection)
 {
-  int i;
+  unsigned int i;
   for(i = 0; i < goCollection.size(); ++i)
   {
     goCollection[i].move();
@@ -72,7 +77,7 @@ int move_all(Vector<GameObj> &goCollection)
 
 int draw_all(Mat image, Vector<GameObj> &goCollection)
 {
-  int i;
+  unsigned int i;
   for(i = 0; i < goCollection.size(); ++i)
   {
     goCollection[i].draw(image);

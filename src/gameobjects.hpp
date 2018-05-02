@@ -35,6 +35,7 @@ class Player: public GameObj
 {
   public:
     Player(Point position, int radius);
+    void move();
     void reposition(Point position);
     void draw(Mat image);
 };
