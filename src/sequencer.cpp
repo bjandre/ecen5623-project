@@ -126,6 +126,12 @@ void *sequencer(void *context)
     int rc, delay_cnt = 0;
     unsigned long long seqCnt = 0;
     threadParams_t *threadParams = (threadParams_t *)context;
+
+    plog_buffer_t buff;
+    plog_t *curr;
+
+    initPlogBuff(10000, &buff);
+
     char message[MAX_MSG_LEN];
 
     gettimeofday(&current_time_val, (struct timezone *)0);
@@ -169,6 +175,8 @@ void *sequencer(void *context)
 
         } while ((residual > 0.0) && (delay_cnt < 100));
 
+        getStartPlog(&buff, &curr, 1);
+
         seqCnt++;
         gettimeofday(&current_time_val, (struct timezone *)0);
         snprintf(message, MAX_MSG_LEN, "Sequencer cycle %llu @ sec=%d, msec=%d\n",
@@ -201,7 +209,6 @@ void *sequencer(void *context)
             sem_post(&semS3);
         }
 
-
         gettimeofday(&current_time_val, (struct timezone *)0);
         snprintf(message, MAX_MSG_LEN,
                  "Sequencer release all sub-services @ sec=%d, msec=%d\n",
@@ -211,6 +218,8 @@ void *sequencer(void *context)
             printf("%s", message);
         }
 
+        endPlog(curr);
+
     } while (!abortTest && (seqCnt < threadParams->sequencePeriods));
 
     abortS1 = true;
@@ -219,6 +228,8 @@ void *sequencer(void *context)
     sem_post(&semS2);
     abortS3 = true;
     sem_post(&semS3);
+
+    csvAppendPlogBuff(&buff, "results.csv");
 
     pthread_exit((void *)0);
 }
