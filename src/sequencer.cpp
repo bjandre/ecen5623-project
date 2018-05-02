@@ -104,6 +104,8 @@
 
 #include "thread_context.hpp"
 
+#include "plog.hpp"
+
 static const int MAX_MSG_LEN = 1024;
 static const bool debug = false;
 
