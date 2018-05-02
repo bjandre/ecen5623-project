@@ -444,7 +444,7 @@ void *Service_2(void *threadp)
             minEnclosingCircle( (Mat)contours_poly[i], center[i], radius[i] );
         }
 
-        if(center.size > 0)
+        if(center.size() > 0)
         {
             player.reposition(center[0]);
         }
