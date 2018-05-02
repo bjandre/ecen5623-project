@@ -444,7 +444,10 @@ void *Service_2(void *threadp)
             minEnclosingCircle( (Mat)contours_poly[i], center[i], radius[i] );
         }
 
-        player.reposition(center[0]);
+        if(center.size > 0)
+        {
+            player.reposition(center[0]);
+        }
 
         gettimeofday(&current_time_val, (struct timezone *)0);
         snprintf(message, MAX_MSG_LEN,
