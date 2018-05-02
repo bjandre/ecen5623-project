@@ -320,6 +320,8 @@ int main(int argc, char **argv)
         pthread_join(threads[i], NULL);
     }
 
+    printf("\nWRITING LOGS\n");
+
     csvAppendPlogBuff(&buff, "results.csv");
 
     printf("\nTEST COMPLETE\n");

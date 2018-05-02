@@ -213,8 +213,12 @@ void *sequencer(void *context)
 
     } while (!abortTest && (seqCnt < threadParams->sequencePeriods));
 
-    sem_post(&semS1);
     abortS1 = true;
+    sem_post(&semS1);
+    abortS2 = true;
+    sem_post(&semS2);
+    abortS3 = true;
+    sem_post(&semS3);
 
     pthread_exit((void *)0);
 }
