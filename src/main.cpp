@@ -400,7 +400,7 @@ void *Service_2(void *threadp)
         printf("%s", message);
     }
 
-    Mat accScaled, sub;
+    Mat accScaled, sub, ba;
 
     while (!abortS2) {
         sem_wait(&semS2);
@@ -412,13 +412,41 @@ void *Service_2(void *threadp)
 
         absdiff(rsrc, accScaled, sub);
 
-        threshold(sub, sub, 25, 255, THRESH_BINARY);
+        threshold(sub, sub, 20, 255, THRESH_BINARY);
 
-        //contour to find laser position
+        threshold(rsrc, rsrc, 160, 255, THRESH_BINARY);
+
+        medianBlur(sub, sub, 5);
+        medianBlur(rsrc, rsrc, 5);
+
+        bitwise_and(sub,rsrc,ba);
+
+        vector<vector<Point> > contours;
+        vector<Vec4i> hierarchy;
+
+        findContours( ba, contours, hierarchy,
+            CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE );
+
+        /// Approximate contour to polygon and get bounding circle
+        vector<vector<Point> > contours_poly( contours.size() );
+        vector<Point2f>center( contours.size() );
+        vector<float>radius( contours.size() );
+
+        for( int i = 0; i < contours.size(); i++ )
+        {
+            approxPolyDP( Mat(contours[i]), contours_poly[i], 3, true );
+            minEnclosingCircle( (Mat)contours_poly[i], center[i], radius[i] );
+        }
 
 
         //detect collisions
+        Scalar color[] = {Scalar(255,0,0),Scalar(0,255,0),Scalar(0,0,255)};
 
+        /// Draw polygonal contour + circles
+        for( int i = 0; i< (contours.size() & 3); i++ )
+         {
+           circle( src, center[i], (int)radius[i], color[i], 2, 8, 0 );
+         }
 
         gettimeofday(&current_time_val, (struct timezone *)0);
         snprintf(message, MAX_MSG_LEN,
