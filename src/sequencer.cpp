@@ -177,7 +177,7 @@ void *sequencer(void *context)
 
         } while ((residual > 0.0) && (delay_cnt < 100));
 
-        getStartPlog(&buff, &curr, 1);
+        getStartPlog(&buff, &curr, 0);
 
         seqCnt++;
         gettimeofday(&current_time_val, (struct timezone *)0);
