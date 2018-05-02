@@ -12,7 +12,6 @@ class GameObj
   public:
     Point pos;
     int size;
-    virtual void move() = 0;
     virtual void draw(Mat image) = 0;
 };
 
@@ -36,12 +35,11 @@ class Player: public GameObj
 {
   public:
     Player(Point position, int radius);
-    void move();
     void reposition(Point position);
     void draw(Mat image);
 };
 
-int move_all(Mat image, Vector<GameObj> &goCollection);
+int move_all(Mat image, Vector<Obstacle> &goCollection);
 int draw_all(Mat image, Vector<GameObj> &goCollection);
 int detect_collision(GameObj &go1, GameObj &go2);
 int detect_collision(GameObj &go1, Vector<GameObj> &goCollection);

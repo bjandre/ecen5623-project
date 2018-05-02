@@ -48,11 +48,6 @@ Player::Player(Point position, int radius)
   size = radius;
 }
 
-void Player::move()
-{
-
-}
-
 void Player::reposition(Point position)
 {
   pos = position;
@@ -64,7 +59,7 @@ void Player::draw(Mat image)
   circle(image, pos, size, PLAYER_COLOR_2, PLAYER_THICKNESS,8,0);
 }
 
-int move_all(Vector<GameObj> &goCollection)
+int move_all(Vector<Obstacle> &goCollection)
 {
   unsigned int i;
   for(i = 0; i < goCollection.size(); ++i)
