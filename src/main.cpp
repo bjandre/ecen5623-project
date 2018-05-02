@@ -130,6 +130,8 @@ extern struct timeval start_time_val;
 
 Mat src, rsrc, acc;
 
+Player player(Point(0,0), 25);
+
 plog_buffer_t buff;
 
 void *Service_1(void *threadp);
@@ -152,7 +154,9 @@ int main(int argc, char **argv)
     pid_t mainpid;
     cpu_set_t allcpuset;
 
+    //init things needed in services
     initPlogBuff(10000, &buff);
+
 
     std::cout << "red laser pointer cursor game" << std::endl;
 
@@ -440,15 +444,7 @@ void *Service_2(void *threadp)
             minEnclosingCircle( (Mat)contours_poly[i], center[i], radius[i] );
         }
 
-
-        //detect collisions
-        Scalar color[] = {Scalar(255,0,0),Scalar(0,255,0),Scalar(0,0,255)};
-
-        /// Draw polygonal contour + circles
-        for(i = 0; i< (contours.size() & 3); i++)
-         {
-           circle( src, center[i], (int)radius[i], color[i], 2, 8, 0 );
-         }
+        player.reposition(center[0]);
 
         gettimeofday(&current_time_val, (struct timezone *)0);
         snprintf(message, MAX_MSG_LEN,
@@ -500,6 +496,8 @@ void *Service_3(void *threadp)
 
         o.move();
         o.draw(disp);
+
+        player.draw(disp);
 
         if (detect_collision(goal, o)) {
             putText(disp, "Collision!", Point(40, 40), FONT_HERSHEY_COMPLEX_SMALL, 5,
