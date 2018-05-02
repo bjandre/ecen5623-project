@@ -351,7 +351,7 @@ void *Service_1(void *threadp)
     VideoCapture cap;
     Mat bgr[3];
 
-    init_camera(&cap, 640, 480);
+    init_camera(&cap, 320, 240);
 
     cap >> src;
     split(src, bgr);
