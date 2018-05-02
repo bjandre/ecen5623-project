@@ -12,6 +12,7 @@ class GameObj
   public:
     Point pos;
     int size;
+    virtual void move() = 0;
     virtual void draw(Mat image) = 0;
 };
 

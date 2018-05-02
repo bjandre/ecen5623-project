@@ -48,7 +48,7 @@ Player::Player(Point position, int radius)
   size = radius;
 }
 
-void Player::move(Point position)
+void Player::move()
 {
 
 }
@@ -100,7 +100,7 @@ int detect_collision(GameObj &go1, GameObj &go2)
 
 int detect_collision(GameObj &go1, Vector<GameObj> &goCollection)
 {
-  int i;
+  unsigned int i;
   for(i = 0; i < goCollection.size(); ++i)
   {
     if(detect_collision(go1, goCollection[i]))
