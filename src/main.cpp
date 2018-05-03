@@ -136,7 +136,7 @@ Player player(Point(0,0), 25);
 Goal goal(Point(200, 200) , 40);
 
 static const unsigned int NUM_OBS = 5;
-Obstacle[NUM_OBS] obstacles;
+Obstacle obstacles[NUM_OBS];
 
 int score = 0;
 bool goalCollision = false, obsCollision = false;
