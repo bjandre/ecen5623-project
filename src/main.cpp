@@ -396,6 +396,10 @@ void *Service_1(void *threadp)
             accumulateWeighted(rsrc, acc, 0.1);
             isPaused = true;
         }
+        else
+        {
+            isPaused = false;
+        }
 
 
         if (debug) {
@@ -515,7 +519,7 @@ void *Service_2(void *threadp)
             }
 
         }
-        
+
         if (debug) {
             gettimeofday(&current_time_val, (struct timezone *)0);
             snprintf(message, MAX_MSG_LEN,
@@ -573,12 +577,12 @@ void *Service_3(void *threadp)
 
         if(gameOver)
         {
-            putText(disp, "Game Over", Point(VIDEO_WIDTH/3, VIDEO_HEIGHT/3), FONT_HERSHEY_COMPLEX_SMALL, 4,
+            putText(disp, "Game Over", Point(VIDEO_WIDTH/3, VIDEO_HEIGHT/3), FONT_HERSHEY_COMPLEX_SMALL, 2,
                     Scalar(100, 100, 100), 1, CV_AA);
         }
         else if (isPaused) 
         {
-            putText(disp, "Game Paused", Point(VIDEO_WIDTH/3, VIDEO_HEIGHT/3), FONT_HERSHEY_COMPLEX_SMALL, 4,
+            putText(disp, "Game Paused", Point(VIDEO_WIDTH/3, VIDEO_HEIGHT/3), FONT_HERSHEY_COMPLEX_SMALL, 2,
                     Scalar(100, 100, 100), 1, CV_AA);
         }
 
