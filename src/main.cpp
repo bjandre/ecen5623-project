@@ -130,7 +130,12 @@ extern struct timeval start_time_val;
 
 Mat src, rsrc, acc;
 
-Player player(Point(0,0), 25);
+Player player(Point(0,0), 25);    
+Goal goal(Point(200, 200) , 40);
+vector <Obstacle> obstacles;
+
+int score = 0;
+bool goalCollision = false, obsCollision = false;
 
 plog_buffer_t buff;
 
@@ -449,6 +454,8 @@ void *Service_2(void *threadp)
             player.reposition(center[0]);
         }
 
+        obstacles.move_all();
+
         if (debug) {
             gettimeofday(&current_time_val, (struct timezone *)0);
             snprintf(message, MAX_MSG_LEN,
@@ -482,8 +489,6 @@ void *Service_3(void *threadp)
     }
 
     Mat disp;
-    Goal goal(Point(75, 75) , 40);
-    Obstacle o(Point(165, 55) , 40, Point(-2, 0));
     cvNamedWindow("Video");
 
     int i = 0;
@@ -494,18 +499,17 @@ void *Service_3(void *threadp)
 
         src.copyTo(disp);
 
-        write_ui(disp, i++);
+        obstacles.push_back(Obstacle(Point(0, 0) , rand()20 + 20, Point(rand()%8, rand()%8)));
+
+        write_ui(disp, score);
         goal.draw(disp);
-
-        o.move();
-        o.draw(disp);
-
+        obstacles.draw_all(disp);
         player.draw(disp);
 
-        if (detect_collision(goal, o)) {
-            putText(disp, "Collision!", Point(40, 40), FONT_HERSHEY_COMPLEX_SMALL, 5,
-                    Scalar(100, 100, 100), 1, CV_AA);
-        }
+        // if (detect_collision(goal, o)) {
+        //     putText(disp, "Collision!", Point(40, 40), FONT_HERSHEY_COMPLEX_SMALL, 5,
+        //             Scalar(100, 100, 100), 1, CV_AA);
+        // }
 
         if (!disp.empty()) {
             imshow("Video", disp);
