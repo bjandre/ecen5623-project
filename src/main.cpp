@@ -130,9 +130,9 @@ extern int abortS3;
 extern sem_t semS3;
 extern struct timeval start_time_val;
 
-Mat src, rsrc, acc;
+Mat src, rsrc, acc, accScaled, sub;
 
-Player player(Point(0,0), 10);    
+Player player(Point(VIDEO_WIDTH,VIDEO_HEIGHT), 10);    
 Goal goal(Point(200, 200) , 15);
 
 static const unsigned int NUM_OBS = 5;
@@ -381,8 +381,22 @@ void *Service_1(void *threadp)
 
         bgr[2].copyTo(rsrc);
 
-        //update the background model
-        accumulateWeighted(rsrc, acc, 0.1);
+        // Scale it to 8-bit unsigned
+        convertScaleAbs(acc, accScaled);
+
+        absdiff(rsrc, accScaled, sub);
+
+        threshold(sub, sub, 20, 255, THRESH_BINARY);
+
+        Scalar m = mean(sub);
+
+        if(m.val[0] > 1)
+        {
+            //update the background model
+            accumulateWeighted(rsrc, acc, 0.1);
+            isPaused = true;
+        }
+
 
         if (debug) {
             gettimeofday(&current_time_val, (struct timezone *)0);
@@ -417,21 +431,14 @@ void *Service_2(void *threadp)
         printf("%s", message);
     }
 
-    Mat accScaled, sub, ba;
+    Mat ba;
 
     while (!abortS2) {
         sem_wait(&semS2);
         getStartPlog(&buff, &curr, 2);
         S2Cnt++;
 
-        // Scale it to 8-bit unsigned
-        convertScaleAbs(acc, accScaled);
-
-        absdiff(rsrc, accScaled, sub);
-
-        threshold(sub, sub, 20, 255, THRESH_BINARY);
-
-        threshold(rsrc, rsrc, 160, 255, THRESH_BINARY);
+        threshold(rsrc, rsrc, 165, 255, THRESH_BINARY);
 
         medianBlur(sub, sub, 5);
         medianBlur(rsrc, rsrc, 5);
@@ -449,63 +456,66 @@ void *Service_2(void *threadp)
         vector<Point2f>center( contours.size() );
         vector<float>radius( contours.size() );
 
-        unsigned int i;
+        if(!isPaused){
+            unsigned int i;
 
-        for(i = 0; i < contours.size(); i++)
-        {
-            approxPolyDP( Mat(contours[i]), contours_poly[i], 3, true );
-            minEnclosingCircle( (Mat)contours_poly[i], center[i], radius[i] );
-        }
-
-        if(center.size() > 0)
-        {
-            player.reposition(center[0]);
-        }
-
-
-        if(detect_collision(goal, player))
-        {
-            score++;
-            goal.pos = Point(rand()%VIDEO_WIDTH, rand()%VIDEO_HEIGHT);
-        }
-
-        for(i = 0; i < NUM_OBS; i++)
-        {
-            if(detect_collision(obstacles[i], player))
+            for(i = 0; i < contours.size(); i++)
             {
-                gameOver = true;
-            }
-        }
-
-        for(i = 0; i < NUM_OBS; i++)
-        {
-            obstacles[i].move();
-
-            if((obstacles[i].pos.x > (signed)VIDEO_WIDTH) || (obstacles[i].pos.x < 0))
-            {
-                obstacles[i].speed.x *= -1;
+                approxPolyDP( Mat(contours[i]), contours_poly[i], 3, true );
+                minEnclosingCircle( (Mat)contours_poly[i], center[i], radius[i] );
             }
 
-            if((obstacles[i].pos.y > (signed)VIDEO_HEIGHT) || (obstacles[i].pos.y < 0))
+            if(center.size() > 0)
             {
-                obstacles[i].speed.y *= -1;
+                player.reposition(center[0]);
             }
-        }
 
-        for(i = 0; i < NUM_OBS; i++)
-        {
-            if(detect_collision(obstacles[i], player))
+
+            if(detect_collision(goal, player))
             {
-                gameOver = true;
+                score++;
+                goal.pos = Point(rand()%VIDEO_WIDTH, rand()%VIDEO_HEIGHT);
             }
-        }
 
-        if(gameOver)
-        {
-            abortS1 = true;
-            abortS2 = true;
-        }
+            for(i = 0; i < NUM_OBS; i++)
+            {
+                if(detect_collision(obstacles[i], player))
+                {
+                    gameOver = true;
+                }
+            }
 
+            for(i = 0; i < NUM_OBS; i++)
+            {
+                obstacles[i].move();
+
+                if((obstacles[i].pos.x > (signed)VIDEO_WIDTH) || (obstacles[i].pos.x < 0))
+                {
+                    obstacles[i].speed.x *= -1;
+                }
+
+                if((obstacles[i].pos.y > (signed)VIDEO_HEIGHT) || (obstacles[i].pos.y < 0))
+                {
+                    obstacles[i].speed.y *= -1;
+                }
+            }
+
+            for(i = 0; i < NUM_OBS; i++)
+            {
+                if(detect_collision(obstacles[i], player))
+                {
+                    gameOver = true;
+                }
+            }
+
+            if(gameOver)
+            {
+                abortS1 = true;
+                abortS2 = true;
+            }
+
+        }
+        
         if (debug) {
             gettimeofday(&current_time_val, (struct timezone *)0);
             snprintf(message, MAX_MSG_LEN,
