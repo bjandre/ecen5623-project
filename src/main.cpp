@@ -386,14 +386,16 @@ void *Service_1(void *threadp)
 
         absdiff(rsrc, accScaled, sub);
 
-        threshold(sub, sub, 20, 255, THRESH_BINARY);
+        threshold(sub, sub, 25, 255, THRESH_BINARY);
 
         Scalar m = mean(sub);
 
-        if(m.val[0] > 1)
+
+        //update the background model
+        accumulateWeighted(rsrc, acc, 0.1 * m.val[0]);
+
+        if(m.val[0] > 2)
         {
-            //update the background model
-            accumulateWeighted(rsrc, acc, 0.1);
             isPaused = true;
         }
         else
@@ -577,12 +579,12 @@ void *Service_3(void *threadp)
 
         if(gameOver)
         {
-            putText(disp, "Game Over", Point(VIDEO_WIDTH/3, VIDEO_HEIGHT/3), FONT_HERSHEY_COMPLEX_SMALL, 2,
+            putText(disp, "Game Over", Point(VIDEO_WIDTH/4, VIDEO_HEIGHT/3), FONT_HERSHEY_COMPLEX_SMALL, 1,
                     Scalar(100, 100, 100), 1, CV_AA);
         }
         else if (isPaused) 
         {
-            putText(disp, "Game Paused", Point(VIDEO_WIDTH/3, VIDEO_HEIGHT/3), FONT_HERSHEY_COMPLEX_SMALL, 2,
+            putText(disp, "Game Paused", Point(VIDEO_WIDTH/4, VIDEO_HEIGHT/3), FONT_HERSHEY_COMPLEX_SMALL, 1,
                     Scalar(100, 100, 100), 1, CV_AA);
         }
 
