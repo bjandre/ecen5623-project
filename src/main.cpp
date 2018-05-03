@@ -499,9 +499,9 @@ void *Service_3(void *threadp)
 
         src.copyTo(disp);
 
-        GameObj* newOb = new Obstacle(Point(0, 0) , rand()%20 + 20, Point(rand()%8, rand()%8));
+        Obstacle* newOb = new Obstacle(Point(0, 0) , rand()%20 + 20, Point(rand()%8, rand()%8));
         storedObstacles.push_back(*newOb);
-        obstacles.push_back(newOb);
+        obstacles.push_back((GameObj*)newOb);
 
         write_ui(disp, score);
         goal.draw(disp);
