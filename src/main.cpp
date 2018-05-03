@@ -454,7 +454,7 @@ void *Service_2(void *threadp)
             player.reposition(center[0]);
         }
 
-        obstacles.move_all();
+        move_all(obstacles);
 
         if (debug) {
             gettimeofday(&current_time_val, (struct timezone *)0);
