@@ -26,6 +26,7 @@ class Obstacle: public GameObj
 {
   public:
     Point speed;
+    Obstacle();
     Obstacle(Point position, int radius, Point moveSpeed);
     void move();
     void draw(Mat image);

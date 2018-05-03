@@ -24,6 +24,13 @@ void Goal::draw(Mat image)
   circle(image, pos, size, GOAL_COLOR, GOAL_THICKNESS,8,0);
 }
 
+Obstacle::Obstacle()
+{
+  pos = Point(0,0);
+  size = 20;
+  speed = Point(0,0);
+}
+
 Obstacle::Obstacle(Point position, int radius, Point moveSpeed)
 {
   pos = position;
