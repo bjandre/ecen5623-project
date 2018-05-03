@@ -132,8 +132,8 @@ extern struct timeval start_time_val;
 
 Mat src, rsrc, acc;
 
-Player player(Point(0,0), 25);    
-Goal goal(Point(200, 200) , 40);
+Player player(Point(0,0), 10);    
+Goal goal(Point(200, 200) , 15);
 
 static const unsigned int NUM_OBS = 5;
 Obstacle obstacles[NUM_OBS];
@@ -170,7 +170,7 @@ int main(int argc, char **argv)
     for(i = 0; i < NUM_OBS; i++)
     {
         obstacles[i].speed = Point(rand()%7 - 3, rand()%7 - 3);
-        obstacles[i].size = rand()%20 + 20;
+        obstacles[i].size = rand()%10 + 5;
     }
 
     std::cout << "red laser pointer cursor game" << std::endl;
@@ -532,6 +532,8 @@ void *Service_3(void *threadp)
         }
 
         player.draw(disp);
+
+        resize(disp, disp, Size(), 2.5, 2.5);
 
         // if (detect_collision(goal, o)) {
         //     putText(disp, "Collision!", Point(40, 40), FONT_HERSHEY_COMPLEX_SMALL, 5,
