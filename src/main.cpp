@@ -139,7 +139,7 @@ static const unsigned int NUM_OBS = 5;
 Obstacle obstacles[NUM_OBS];
 
 int score = 0;
-bool goalCollision = false, obsCollision = false;
+bool goalCollision = false, gameOver = false, isPaused = false;
 
 plog_buffer_t buff;
 
@@ -320,7 +320,7 @@ int main(int argc, char **argv)
 
     // Create Sequencer thread, which like a cyclic executive, is highest prio
     printf("Start sequencer\n");
-    threadParams[0].sequencePeriods = 900;
+    threadParams[0].sequencePeriods = 9000;
 
     // Sequencer = RT_MAX   @ 30 Hz
     //
@@ -339,11 +339,9 @@ int main(int argc, char **argv)
         pthread_join(threads[i], NULL);
     }
 
-    printf("\nWRITING LOGS\n");
-
     csvAppendPlogBuff(&buff, "results.csv");
 
-    printf("\nTEST COMPLETE\n");
+    printf("\nGame Over\n");
 }
 
 //frame grabbing and accumulating service
@@ -464,6 +462,21 @@ void *Service_2(void *threadp)
             player.reposition(center[0]);
         }
 
+
+        if(detect_collision(goal, player))
+        {
+            score++;
+            goal.pos = Point(rand()%VIDEO_WIDTH, rand()%VIDEO_HEIGHT);
+        }
+
+        for(i = 0; i < NUM_OBS; i++)
+        {
+            if(detect_collision(obstacles[i], player))
+            {
+                gameOver = true;
+            }
+        }
+
         for(i = 0; i < NUM_OBS; i++)
         {
             obstacles[i].move();
@@ -477,6 +490,20 @@ void *Service_2(void *threadp)
             {
                 obstacles[i].speed.y *= -1;
             }
+        }
+
+        for(i = 0; i < NUM_OBS; i++)
+        {
+            if(detect_collision(obstacles[i], player))
+            {
+                gameOver = true;
+            }
+        }
+
+        if(gameOver)
+        {
+            abortS2 = true;
+            abortS3 = true;
         }
 
         if (debug) {
@@ -513,6 +540,7 @@ void *Service_3(void *threadp)
 
     Mat disp;
     cvNamedWindow("Video");
+    cvSetWindowProperty("Video", CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
 
     while (!abortS3) {
         sem_wait(&semS3);
@@ -532,6 +560,18 @@ void *Service_3(void *threadp)
         }
 
         player.draw(disp);
+
+        if(gameOver)
+        {
+            putText(disp, "Game Over", Point(VIDEO_WIDTH/3, VIDEO_HEIGHT/3), FONT_HERSHEY_COMPLEX_SMALL, 4,
+                    Scalar(100, 100, 100), 1, CV_AA);
+        }
+        else if (isPaused) 
+        {
+            putText(disp, "Game Paused", Point(VIDEO_WIDTH/3, VIDEO_HEIGHT/3), FONT_HERSHEY_COMPLEX_SMALL, 4,
+                    Scalar(100, 100, 100), 1, CV_AA);
+        }
+
 
         resize(disp, disp, Size(), 2.5, 2.5);
 
