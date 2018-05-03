@@ -503,7 +503,7 @@ void *Service_3(void *threadp)
 
         write_ui(disp, score);
         goal.draw(disp);
-        obstacles.draw_all(disp);
+        draw_all(disp,obstacles);
         player.draw(disp);
 
         // if (detect_collision(goal, o)) {
