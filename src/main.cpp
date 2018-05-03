@@ -454,7 +454,7 @@ void *Service_2(void *threadp)
             player.reposition(center[0]);
         }
 
-        move_all(obstacles);
+        move_all(&obstacles);
 
         if (debug) {
             gettimeofday(&current_time_val, (struct timezone *)0);
@@ -502,7 +502,7 @@ void *Service_3(void *threadp)
 
         write_ui(disp, score);
         goal.draw(disp);
-        draw_all(disp,obstacles);
+        draw_all(disp,&obstacles);
         player.draw(disp);
 
         // if (detect_collision(goal, o)) {
