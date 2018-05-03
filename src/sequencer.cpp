@@ -197,17 +197,17 @@ void *sequencer(void *context)
         // Release each service at a sub-rate of the generic sequencer rate
 
         // Servcie_1 = RT_MAX-1 @ 3 Hz
-        if ((seqCnt % 4) == 0) {
+        if ((seqCnt % 2) == 0) {
             sem_post(&semS1);
         }
 
         // Servcie_1 = RT_MAX-1 @ 3 Hz
-        if ((seqCnt % 5) == 0) {
+        if ((seqCnt % 3) == 0) {
             sem_post(&semS2);
         }
 
         // Servcie_1 = RT_MAX-1 @ 3 Hz
-        if ((seqCnt % 6) == 0) {
+        if ((seqCnt % 4) == 0) {
             sem_post(&semS3);
         }
 
