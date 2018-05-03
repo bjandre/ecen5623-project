@@ -132,7 +132,7 @@ Mat src, rsrc, acc;
 
 Player player(Point(0,0), 25);    
 Goal goal(Point(200, 200) , 40);
-Vector <Obstacle> obstacles;
+Vector <GameObj*> obstacles;
 
 int score = 0;
 bool goalCollision = false, obsCollision = false;
@@ -498,7 +498,7 @@ void *Service_3(void *threadp)
 
         src.copyTo(disp);
 
-        obstacles.push_back(Obstacle(Point(0, 0) , rand()%20 + 20, Point(rand()%8, rand()%8)));
+        obstacles.push_back(&Obstacle(Point(0, 0) , rand()%20 + 20, Point(rand()%8, rand()%8)));
 
         write_ui(disp, score);
         goal.draw(disp);
