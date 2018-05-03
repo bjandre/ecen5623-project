@@ -491,7 +491,6 @@ void *Service_3(void *threadp)
     Mat disp;
     cvNamedWindow("Video");
 
-    int i = 0;
     while (!abortS3) {
         sem_wait(&semS3);
         getStartPlog(&buff, &curr, 3);
@@ -499,7 +498,7 @@ void *Service_3(void *threadp)
 
         src.copyTo(disp);
 
-        obstacles.push_back(Obstacle(Point(0, 0) , rand()20 + 20, Point(rand()%8, rand()%8)));
+        obstacles.push_back(Obstacle(Point(0, 0) , rand()%20 + 20, Point(rand()%8, rand()%8)));
 
         write_ui(disp, score);
         goal.draw(disp);
