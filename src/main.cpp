@@ -132,7 +132,7 @@ Mat src, rsrc, acc;
 
 Player player(Point(0,0), 25);    
 Goal goal(Point(200, 200) , 40);
-vector <Obstacle> obstacles;
+Vector <Obstacle> obstacles;
 
 int score = 0;
 bool goalCollision = false, obsCollision = false;
