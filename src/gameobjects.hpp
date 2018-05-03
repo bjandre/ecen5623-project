@@ -42,8 +42,8 @@ class Player: public GameObj
 
 int move_all(Vector<Obstacle> &goCollection);
 int draw_all(Mat image, Vector<GameObj*> &goCollection);
-int detect_collision(GameObj &go1, GameObj* go2);
-int detect_collision(GameObj &go1, Vector<GameObj*> &goCollection);
+int detect_collision(GameObj &go1, GameObj &go2);
+// int detect_collision(GameObj &go1, Vector<GameObj*> &goCollection);
 
 
 #endif

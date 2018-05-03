@@ -88,11 +88,11 @@ int draw_all(Mat image, Vector<GameObj*> &goCollection)
   return 0;
 }
 
-int detect_collision(GameObj &go1, GameObj* go2)
+int detect_collision(GameObj &go1, GameObj &go2)
 {
-  int distance = sqrt(SQUARE(go1->pos.x - go2->pos.x) + SQUARE(go1->pos.y - go1->pos.y));
+  int distance = sqrt(SQUARE(go1.pos.x - go2.pos.x) + SQUARE(go1.pos.y - go1.pos.y));
 
-  if(distance < (go1->size + go2->size))
+  if(distance < (go1.size + go2.size))
   {
     return 1;
   }
@@ -100,17 +100,17 @@ int detect_collision(GameObj &go1, GameObj* go2)
   return 0;
 }
 
-int detect_collision(GameObj &go1, Vector<GameObj*> &goCollection)
-{
-  unsigned int i;
-  for(i = 0; i < goCollection.size(); ++i)
-  {
-    if(detect_collision(go1, goCollection[i]))
-    {
-      return i;
-    }
-  }
+// int detect_collision(GameObj &go1, Vector<GameObj*> &goCollection)
+// {
+//   unsigned int i;
+//   for(i = 0; i < goCollection.size(); ++i)
+//   {
+//     if(detect_collision(go1, goCollection[i]))
+//     {
+//       return i;
+//     }
+//   }
 
-  return 0;
-}
+//   return 0;
+// }
 
