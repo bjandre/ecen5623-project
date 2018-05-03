@@ -392,9 +392,9 @@ void *Service_1(void *threadp)
 
 
         //update the background model
-        accumulateWeighted(rsrc, acc, 0.1 * (m.val[0]/255));
+        accumulateWeighted(rsrc, acc, 0.1);
 
-        if(m.val[0] > 2)
+        if(m.val[0] > 5)
         {
             isPaused = true;
         }
