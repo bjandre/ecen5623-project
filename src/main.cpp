@@ -454,7 +454,7 @@ void *Service_2(void *threadp)
             player.reposition(center[0]);
         }
 
-        move_all(obstacles);
+        move_all((Vector<Obstacle*>)obstacles);
 
         if (debug) {
             gettimeofday(&current_time_val, (struct timezone *)0);
@@ -498,7 +498,8 @@ void *Service_3(void *threadp)
 
         src.copyTo(disp);
 
-        obstacles.push_back(&Obstacle(Point(0, 0) , rand()%20 + 20, Point(rand()%8, rand()%8)));
+        GameObj* newOb = new Obstacle(Point(0, 0) , rand()%20 + 20, Point(rand()%8, rand()%8));
+        obstacles.push_back(newOb);
 
         write_ui(disp, score);
         goal.draw(disp);
