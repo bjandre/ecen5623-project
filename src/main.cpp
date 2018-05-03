@@ -556,7 +556,7 @@ void *Service_3(void *threadp)
 
     Mat disp;
     cvNamedWindow("Video");
-    cvSetWindowProperty("Video", CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
+    setWindowProperty("Video", CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
 
     while (!abortS3) {
         sem_wait(&semS3);
