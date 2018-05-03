@@ -502,8 +502,8 @@ void *Service_2(void *threadp)
 
         if(gameOver)
         {
+            abortS1 = true;
             abortS2 = true;
-            abortS3 = true;
         }
 
         if (debug) {
