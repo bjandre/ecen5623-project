@@ -135,7 +135,7 @@ Mat src, rsrc, acc, accScaled, sub;
 Player player(Point(VIDEO_WIDTH,VIDEO_HEIGHT), 10);    
 Goal goal(Point(200, 200) , 15);
 
-static const unsigned int NUM_OBS = 5;
+static const unsigned int NUM_OBS = 1;
 Obstacle obstacles[NUM_OBS];
 
 int score = 0;
@@ -488,6 +488,9 @@ void *Service_2(void *threadp)
                 if(detect_collision(obstacles[i], player))
                 {
                     gameOver = true;
+		    if (debug) {
+		      std::cout << "pre-move obstacle collision" << std::endl;
+		    }
                 }
             }
 
@@ -511,13 +514,16 @@ void *Service_2(void *threadp)
                 if(detect_collision(obstacles[i], player))
                 {
                     gameOver = true;
+		    if (debug) {
+		      std::cout << "post-move obstacle collision" << std::endl;
+		    }
                 }
             }
 
             if(gameOver)
             {
-                abortS1 = true;
-                abortS2 = true;
+                // abortS1 = true;
+                // abortS2 = true;
             }
 
         }
@@ -579,8 +585,8 @@ void *Service_3(void *threadp)
 
         if(gameOver)
         {
-            putText(disp, "Game Over", Point(VIDEO_WIDTH/4, VIDEO_HEIGHT/3), FONT_HERSHEY_COMPLEX_SMALL, 1,
-                    Scalar(100, 100, 100), 1, CV_AA);
+	  // putText(disp, "Game Over", Point(VIDEO_WIDTH/4, VIDEO_HEIGHT/3), FONT_HERSHEY_COMPLEX_SMALL, 1,
+	  //       Scalar(100, 100, 100), 1, CV_AA);
         }
         else if (isPaused) 
         {
