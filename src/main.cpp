@@ -119,6 +119,8 @@ using namespace cv;
 
 static const int MAX_MSG_LEN = 1024;
 static const bool debug = false;
+static const unsigned int VIDEO_WIDTH = 320;
+static const unsigned int VIDEO_HEIGHT = 240;
 
 extern int abortS1;
 extern sem_t semS1;
@@ -132,8 +134,9 @@ Mat src, rsrc, acc;
 
 Player player(Point(0,0), 25);    
 Goal goal(Point(200, 200) , 40);
-Vector <GameObj*> obstacles;
-Vector <Obstacle> storedObstacles;
+
+static const unsigned int NUM_OBS = 5;
+Obstacle[NUM_OBS] obstacles;
 
 int score = 0;
 bool goalCollision = false, obsCollision = false;
@@ -163,6 +166,12 @@ int main(int argc, char **argv)
     //init things needed in services
     initPlogBuff(10000, &buff);
 
+    unsigned int i;
+    for(i = 0; i < NUM_OBS; i++)
+    {
+        obstacles[i].speed = Point(rand()%7 - 3, rand()%7 - 3);
+        obstacles[i].size = rand()%20 + 20;
+    }
 
     std::cout << "red laser pointer cursor game" << std::endl;
 
@@ -357,7 +366,7 @@ void *Service_1(void *threadp)
     VideoCapture cap;
     Mat bgr[3];
 
-    init_camera(&cap, 320, 240);
+    init_camera(&cap, VIDEO_WIDTH, VIDEO_HEIGHT);
 
     cap >> src;
     split(src, bgr);
@@ -455,7 +464,20 @@ void *Service_2(void *threadp)
             player.reposition(center[0]);
         }
 
-        move_all(storedObstacles);
+        for(i = 0; i < NUM_OBS; i++)
+        {
+            obstacles[i].move();
+
+            if((obstacles[i].pos.x > VIDEO_WIDTH) || (obstacles[i].pos.x < 0))
+            {
+                obstacles[i].speed.x *= -1;
+            }
+            
+            if((obstacles[i].pos.y > VIDEO_HEIGHT) || (obstacles[i].pos.y < 0))
+            {
+                obstacles[i].speed.y *= -1;
+            }
+        }
 
         if (debug) {
             gettimeofday(&current_time_val, (struct timezone *)0);
@@ -499,13 +521,16 @@ void *Service_3(void *threadp)
 
         src.copyTo(disp);
 
-        Obstacle* newOb = new Obstacle(Point(0, 0) , rand()%20 + 20, Point(rand()%8, rand()%8));
-        storedObstacles.push_back(*newOb);
-        obstacles.push_back((GameObj*)newOb);
-
         write_ui(disp, score);
         goal.draw(disp);
-        draw_all(disp,obstacles);
+
+
+        unsigned int i;
+        for(i = 0; i < NUM_OBS; i++)
+        {
+            obstacles[i].draw(disp);
+        }
+
         player.draw(disp);
 
         // if (detect_collision(goal, o)) {
