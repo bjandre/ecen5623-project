@@ -340,11 +340,11 @@ void *Service_1(void *threadp)
 
     char message[MAX_MSG_LEN];
 
-    gettimeofday(&current_time_val, (struct timezone *)0);
-    snprintf(message, MAX_MSG_LEN, "Frame Sampler thread @ sec=%d, msec=%d\n",
-             (int)(current_time_val.tv_sec - start_time_val.tv_sec),
-             (int)current_time_val.tv_usec / USEC_PER_MSEC);
     if (debug) {
+        gettimeofday(&current_time_val, (struct timezone *)0);
+        snprintf(message, MAX_MSG_LEN, "Frame Sampler thread @ sec=%d, msec=%d\n",
+                 (int)(current_time_val.tv_sec - start_time_val.tv_sec),
+                 (int)current_time_val.tv_usec / USEC_PER_MSEC);
         printf("%s", message);
     }
 
@@ -371,12 +371,12 @@ void *Service_1(void *threadp)
         //update the background model
         accumulateWeighted(rsrc, acc, 0.1);
 
-        gettimeofday(&current_time_val, (struct timezone *)0);
-        snprintf(message, MAX_MSG_LEN, "Frame Sampler release %llu @ sec=%d, msec=%d\n",
-                 S1Cnt,
-                 (int)(current_time_val.tv_sec - start_time_val.tv_sec),
-                 (int)current_time_val.tv_usec / USEC_PER_MSEC);
         if (debug) {
+            gettimeofday(&current_time_val, (struct timezone *)0);
+            snprintf(message, MAX_MSG_LEN, "Frame Sampler release %llu @ sec=%d, msec=%d\n",
+                     S1Cnt,
+                     (int)(current_time_val.tv_sec - start_time_val.tv_sec),
+                     (int)current_time_val.tv_usec / USEC_PER_MSEC);
             printf("%s", message);
         }
 
@@ -395,12 +395,12 @@ void *Service_2(void *threadp)
 
     char message[MAX_MSG_LEN];
     
-    gettimeofday(&current_time_val, (struct timezone *)0);
-    snprintf(message, MAX_MSG_LEN,
-             "Tracking and collision detection thread @ sec=%d, msec=%d\n",
-             (int)(current_time_val.tv_sec - start_time_val.tv_sec),
-             (int)current_time_val.tv_usec / USEC_PER_MSEC);
     if (debug) {
+        gettimeofday(&current_time_val, (struct timezone *)0);
+        snprintf(message, MAX_MSG_LEN,
+                 "Tracking and collision detection thread @ sec=%d, msec=%d\n",
+                 (int)(current_time_val.tv_sec - start_time_val.tv_sec),
+                 (int)current_time_val.tv_usec / USEC_PER_MSEC);
         printf("%s", message);
     }
 
@@ -449,12 +449,12 @@ void *Service_2(void *threadp)
             player.reposition(center[0]);
         }
 
-        gettimeofday(&current_time_val, (struct timezone *)0);
-        snprintf(message, MAX_MSG_LEN,
-                 "Tracking and collision detection release %llu @ sec=%d, msec=%d\n", S2Cnt,
-                 (int)(current_time_val.tv_sec - start_time_val.tv_sec),
-                 (int)current_time_val.tv_usec / USEC_PER_MSEC);
         if (debug) {
+            gettimeofday(&current_time_val, (struct timezone *)0);
+            snprintf(message, MAX_MSG_LEN,
+                     "Tracking and collision detection release %llu @ sec=%d, msec=%d\n", S2Cnt,
+                     (int)(current_time_val.tv_sec - start_time_val.tv_sec),
+                     (int)current_time_val.tv_usec / USEC_PER_MSEC);
             printf("%s", message);
         }
 
@@ -473,11 +473,11 @@ void *Service_3(void *threadp)
 
     char message[MAX_MSG_LEN];
 
-    gettimeofday(&current_time_val, (struct timezone *)0);
-    snprintf(message, MAX_MSG_LEN, "Rendering thread @ sec=%d, msec=%d\n",
-             (int)(current_time_val.tv_sec - start_time_val.tv_sec),
-             (int)current_time_val.tv_usec / USEC_PER_MSEC);
     if (debug) {
+        gettimeofday(&current_time_val, (struct timezone *)0);
+        snprintf(message, MAX_MSG_LEN, "Rendering thread @ sec=%d, msec=%d\n",
+                 (int)(current_time_val.tv_sec - start_time_val.tv_sec),
+                 (int)current_time_val.tv_usec / USEC_PER_MSEC);
         printf("%s", message);
     }
 
@@ -516,12 +516,12 @@ void *Service_3(void *threadp)
             }
         }
 
-        gettimeofday(&current_time_val, (struct timezone *)0);
-        snprintf(message, MAX_MSG_LEN, "Rendering release %llu @ sec=%d, msec=%d\n",
-                 S3Cnt,
-                 (int)(current_time_val.tv_sec - start_time_val.tv_sec),
-                 (int)current_time_val.tv_usec / USEC_PER_MSEC);
         if (debug) {
+            gettimeofday(&current_time_val, (struct timezone *)0);
+            snprintf(message, MAX_MSG_LEN, "Rendering release %llu @ sec=%d, msec=%d\n",
+                     S3Cnt,
+                     (int)(current_time_val.tv_sec - start_time_val.tv_sec),
+                     (int)current_time_val.tv_usec / USEC_PER_MSEC);
             printf("%s", message);
         }
 
