@@ -468,12 +468,12 @@ void *Service_2(void *threadp)
         {
             obstacles[i].move();
 
-            if((obstacles[i].pos.x > VIDEO_WIDTH) || (obstacles[i].pos.x < 0))
+            if((obstacles[i].pos.x > (signed)VIDEO_WIDTH) || (obstacles[i].pos.x < 0))
             {
                 obstacles[i].speed.x *= -1;
             }
-            
-            if((obstacles[i].pos.y > VIDEO_HEIGHT) || (obstacles[i].pos.y < 0))
+
+            if((obstacles[i].pos.y > (signed)VIDEO_HEIGHT) || (obstacles[i].pos.y < 0))
             {
                 obstacles[i].speed.y *= -1;
             }
