@@ -59,12 +59,12 @@ void Player::draw(Mat image)
   circle(image, pos, size, PLAYER_COLOR_2, PLAYER_THICKNESS,8,0);
 }
 
-int move_all(Vector<Obstacle*> &goCollection)
+int move_all(Vector<Obstacle> &goCollection)
 {
   unsigned int i;
   for(i = 0; i < goCollection.size(); ++i)
   {
-    goCollection[i]->move();
+    goCollection[i].move();
   }
 
   return 0;

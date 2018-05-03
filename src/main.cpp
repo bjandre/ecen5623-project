@@ -133,6 +133,7 @@ Mat src, rsrc, acc;
 Player player(Point(0,0), 25);    
 Goal goal(Point(200, 200) , 40);
 Vector <GameObj*> obstacles;
+Vector <Obstacle> storedObstacles;
 
 int score = 0;
 bool goalCollision = false, obsCollision = false;
@@ -454,7 +455,7 @@ void *Service_2(void *threadp)
             player.reposition(center[0]);
         }
 
-        move_all((Vector<Obstacle*>)obstacles);
+        move_all(storedObstacles);
 
         if (debug) {
             gettimeofday(&current_time_val, (struct timezone *)0);
@@ -499,6 +500,7 @@ void *Service_3(void *threadp)
         src.copyTo(disp);
 
         GameObj* newOb = new Obstacle(Point(0, 0) , rand()%20 + 20, Point(rand()%8, rand()%8));
+        storedObstacles.push_back(*newOb);
         obstacles.push_back(newOb);
 
         write_ui(disp, score);
