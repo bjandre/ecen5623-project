@@ -394,7 +394,7 @@ void *Service_1(void *threadp)
         //update the background model
         accumulateWeighted(rsrc, acc, 0.1);
 
-        if(m.val[0] > 10)
+        if(m.val[0] > 20)
         {
             isPaused = true;
         }
@@ -444,7 +444,7 @@ void *Service_2(void *threadp)
         getStartPlog(&buff, &curr, 2);
         S2Cnt++;
 
-        threshold(rsrc, rsrc, 165, 255, THRESH_BINARY);
+        threshold(rsrc, rsrc, 170, 255, THRESH_BINARY);
 
         medianBlur(sub, sub, 5);
         medianBlur(rsrc, rsrc, 5);
